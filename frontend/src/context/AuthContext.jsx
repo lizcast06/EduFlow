@@ -4,8 +4,11 @@ import api from '../services/api';
 export const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null);
+  const [user, setUser] = useState(() => {
+    const savedUser = localStorage.getItem('user');
+    return savedUser ? JSON.parse(savedUser) : null;
+  });
+  const [token, setToken] = useState(() => localStorage.getItem('token') || null);
   const [loading, setLoading] = useState(true);
 
   // Set token in Axios globally when token changes
@@ -18,20 +21,22 @@ export const AuthProvider = ({ children }) => {
   }, [token]);
 
   useEffect(() => {
-    // Logic to verify token/session on mount if needed
-    // e.g. via an HTTPOnly cookie endpoint 
-    // or we might lose session on refresh if token is purely in memory.
+    // Session is restored synchronously from localStorage
     setLoading(false);
   }, []);
 
   const login = (userData, jwtToken) => {
     setUser(userData);
     setToken(jwtToken);
+    localStorage.setItem('user', JSON.stringify(userData));
+    localStorage.setItem('token', jwtToken);
   };
 
   const logout = () => {
     setUser(null);
     setToken(null);
+    localStorage.removeItem('user');
+    localStorage.removeItem('token');
   };
 
   return (
