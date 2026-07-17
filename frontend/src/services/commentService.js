@@ -2,11 +2,11 @@ import api from './api';
 
 export const commentService = {
   getByActivity: async (activityId) => {
-    // return (await api.get(`/activities/${activityId}/comments`)).data;
-    return [];
+    const response = await api.get(`/actividades/${activityId}/comentarios`);
+    return response.data.data || [];
   },
   create: async (activityId, data) => {
-    // return (await api.post(`/activities/${activityId}/comments`, data)).data;
-    return null;
+    const response = await api.post(`/actividades/${activityId}/comentarios`, data);
+    return response.data;
   }
 };
