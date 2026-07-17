@@ -1,14 +1,32 @@
 {
+  "name": "eduflow-backend",
+  "version": "1.0.0",
+  "description": "Backend del sistema EduFlow",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "test:models": "node src/test/testModels.js"
+  },
+  "keywords": [
+    "node",
+    "express",
+    "mysql",
+    "sequelize",
+    "jwt"
+  ],
+  "author": "",
+  "license": "ISC",
   "dependencies": {
-    "dotenv": "^17.4.2",
-    "express": "^5.2.1",
-    "mysql2": "^3.23.0",
-    "sequelize": "^6.37.8"
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mysql2": "^3.15.3",
+    "sequelize": "^6.37.7"
   },
   "devDependencies": {
-    "nodemon": "^3.1.14"
-  },
-  "scripts": {
-  "test:models": "node src/test/testModels.js"
-}
+    "nodemon": "^3.1.11"
+  }
 }

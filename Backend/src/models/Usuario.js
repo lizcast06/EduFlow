@@ -16,7 +16,7 @@ class Usuario extends Model {
   }
 
   static async obtenerPorEmail(email) {
-    return await Usuario.findOne({
+    return await Usuario.scope('conPassword').findOne({
       where: { email },
       include: ['rol']
     });
@@ -82,7 +82,19 @@ Usuario.init(
   {
     sequelize,
     modelName: 'Usuario',
-    tableName: 'usuario'
+    tableName: 'usuario',
+    defaultScope: {
+      attributes: {
+        exclude: ['password']
+      }
+    },
+    scopes: {
+      conPassword: {
+        attributes: {
+          include: ['password']
+        }
+      }
+    }
   }
 );
 
