@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { GraduationCap, ShieldCheck, BookOpen, Shield, Zap, Star, ArrowRight } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 
@@ -226,9 +226,9 @@ const LoginPage = () => {
 
           {activeTab === 'login' && (
             <div className="text-center">
-              <a href="#" className="text-xs text-indigo-300 hover:text-white transition-colors">
+              <Link to="/forgot-password" className="text-xs text-indigo-300 hover:text-white transition-colors">
                 ¿Olvidaste tu contraseña?
-              </a>
+              </Link>
             </div>
           )}
 
