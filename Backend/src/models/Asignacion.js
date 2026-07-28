@@ -44,7 +44,8 @@ Asignacion.init(
   {
     sequelize,
     modelName: 'Asignacion',
-    tableName: 'asignacion'
+    tableName: 'asignacion',
+    timestamps: false
   }
 );
 

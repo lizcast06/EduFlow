@@ -7,6 +7,11 @@ const Actividad = require('./Actividad');
 const Evidencia = require('./Evidencia');
 const Comentario = require('./Comentario');
 const Asignacion = require('./Asignacion');
+const Historial = require('./Historial');
+
+// =========================
+// Rol <-> Usuario
+// =========================
 
 Rol.hasMany(Usuario, {
   foreignKey: 'rol_id',
@@ -18,6 +23,7 @@ Usuario.belongsTo(Rol, {
   as: 'rol'
 });
 
+
 Usuario.hasMany(Actividad, {
   foreignKey: 'creador_id',
   as: 'actividadesCreadas'
@@ -28,6 +34,7 @@ Actividad.belongsTo(Usuario, {
   as: 'creador'
 });
 
+
 Estado.hasMany(Actividad, {
   foreignKey: 'estado_id',
   as: 'actividades'
@@ -37,6 +44,7 @@ Actividad.belongsTo(Estado, {
   foreignKey: 'estado_id',
   as: 'estado'
 });
+
 
 Actividad.hasMany(Evidencia, {
   foreignKey: 'actividad_id',
@@ -57,6 +65,7 @@ Evidencia.belongsTo(Usuario, {
   foreignKey: 'usuario_id',
   as: 'usuario'
 });
+
 
 Actividad.hasMany(Comentario, {
   foreignKey: 'actividad_id',
@@ -98,6 +107,7 @@ Asignacion.belongsTo(Usuario, {
   as: 'usuario'
 });
 
+
 Actividad.belongsToMany(Usuario, {
   through: Asignacion,
   foreignKey: 'actividad_id',
@@ -112,6 +122,26 @@ Usuario.belongsToMany(Actividad, {
   as: 'actividadesAsignadas'
 });
 
+Actividad.hasMany(Historial, {
+  foreignKey: 'actividad_id',
+  as: 'historiales'
+});
+
+Historial.belongsTo(Actividad, {
+  foreignKey: 'actividad_id',
+  as: 'actividad'
+});
+
+Usuario.hasMany(Historial, {
+  foreignKey: 'usuario_id',
+  as: 'historiales'
+});
+
+Historial.belongsTo(Usuario, {
+  foreignKey: 'usuario_id',
+  as: 'usuario'
+});
+
 module.exports = {
   sequelize,
   Rol,
@@ -120,5 +150,6 @@ module.exports = {
   Actividad,
   Evidencia,
   Comentario,
-  Asignacion
+  Asignacion,
+  Historial
 };

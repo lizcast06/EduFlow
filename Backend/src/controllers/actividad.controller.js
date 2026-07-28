@@ -1,4 +1,4 @@
-const { Actividad, Estado } = require('../models');
+const { Actividad, Estado, Asignacion, Evidencia, Historial } = require('../models');
 const { successResponse, errorResponse } = require('../utils/response');
 const {
   isEmpty,
@@ -43,7 +43,8 @@ async function crearActividad(req, res) {
       descripcion,
       fecha_limite,
       prioridad,
-      estado_id
+      estado_id,
+      asignados // array of user IDs
     } = req.body;
 
     if (isEmpty(titulo) || isEmpty(fecha_limite) || isEmpty(prioridad)) {
@@ -78,6 +79,21 @@ async function crearActividad(req, res) {
       prioridad,
       estado_id: estadoIdFinal,
       creador_id: req.usuario.id
+    });
+
+    if (asignados && Array.isArray(asignados) && asignados.length > 0) {
+      const asignaciones = asignados.map(usuario_id => ({
+        actividad_id: nuevaActividad.id,
+        usuario_id
+      }));
+      await Asignacion.bulkCreate(asignaciones);
+    }
+
+    await Historial.create({
+      actividad_id: nuevaActividad.id,
+      usuario_id: req.usuario.id,
+      accion: 'Actividad creada',
+      detalles: `El usuario creó la actividad en estado ${estadoInicial.nombre} con prioridad ${prioridad}`
     });
 
     const actividadDetalle = await Actividad.obtenerDetalle(nuevaActividad.id);
@@ -196,7 +212,21 @@ async function cambiarEstado(req, res) {
       return errorResponse(res, 400, 'El estado indicado no existe');
     }
 
+    if (estadoEncontrado.nombre === 'Completado') {
+      const evidencias = await Evidencia.findAll({ where: { actividad_id: id } });
+      if (evidencias.length === 0) {
+        return errorResponse(res, 400, 'No se puede mover a Completado sin adjuntar una evidencia');
+      }
+    }
+
     const actividadActualizada = await Actividad.cambiarEstado(id, estadoEncontrado.id);
+
+    await Historial.create({
+      actividad_id: id,
+      usuario_id: req.usuario ? req.usuario.id : null,
+      accion: 'Cambio de estado',
+      detalles: `La actividad pasó a estado: ${estadoEncontrado.nombre}`
+    });
 
     return successResponse(res, 200, 'Estado de actividad actualizado correctamente', actividadActualizada);
   } catch (error) {

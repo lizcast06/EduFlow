@@ -8,6 +8,7 @@ const PORT = process.env.PORT || 3001;
 async function iniciarServidor() {
   try {
     await sequelize.authenticate();
+    await sequelize.sync({ alter: true }); // Mantiene sincronizada la BD con los nuevos modelos
 
     console.log('Conexión a MySQL exitosa.');
 

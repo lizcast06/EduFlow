@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import LoginPage from '../pages/LoginPage';
+import ForgotPasswordPage from '../pages/ForgotPasswordPage';
 import DashboardPage from '../pages/DashboardPage';
 import BoardPage from '../pages/BoardPage';
 import ActivityDetailPage from '../pages/ActivityDetailPage';
@@ -11,6 +12,7 @@ const AppRouter = () => {
   return (
     <Routes>
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/forgot-password" element={<ForgotPasswordPage />} />
       
       {/* Protected Routes wrapped in PrivateRoute and MainLayout */}
       <Route path="/dashboard" element={<PrivateRoute><MainLayout><DashboardPage /></MainLayout></PrivateRoute>} />

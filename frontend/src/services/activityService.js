@@ -2,22 +2,30 @@ import api from './api';
 
 export const activityService = {
   getAll: async () => {
-    // return (await api.get('/activities')).data;
-    return [];
+    const response = await api.get('/actividades');
+    return response.data.data || [];
   },
   getById: async (id) => {
-    // return (await api.get(`/activities/${id}`)).data;
-    return null;
+    const response = await api.get(`/actividades/${id}`);
+    return response.data.data;
   },
   create: async (data) => {
-    // return (await api.post('/activities', data)).data;
-    return null;
+    const response = await api.post('/actividades', data);
+    return response.data;
   },
   update: async (id, data) => {
-    // return (await api.put(`/activities/${id}`, data)).data;
-    return null;
+    const response = await api.put(`/actividades/${id}`, data);
+    return response.data;
+  },
+  updateStatus: async (id, estado_nombre) => {
+    const response = await api.put(`/actividades/${id}/estado`, { estado: estado_nombre });
+    return response.data;
   },
   delete: async (id) => {
-    // await api.delete(`/activities/${id}`);
+    await api.delete(`/actividades/${id}`);
+  },
+  getHistorial: async (id) => {
+    const response = await api.get(`/actividades/${id}/historial`);
+    return response.data.data || [];
   }
 };

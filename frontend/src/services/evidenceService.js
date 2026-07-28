@@ -2,11 +2,11 @@ import api from './api';
 
 export const evidenceService = {
   getByActivity: async (activityId) => {
-    // return (await api.get(`/activities/${activityId}/evidence`)).data;
-    return [];
+    const response = await api.get(`/actividades/${activityId}/evidencias`);
+    return response.data.data || [];
   },
   add: async (activityId, data) => {
-    // return (await api.post(`/activities/${activityId}/evidence`, data)).data;
-    return null;
+    const response = await api.post(`/actividades/${activityId}/evidencias`, data);
+    return response.data;
   }
 };

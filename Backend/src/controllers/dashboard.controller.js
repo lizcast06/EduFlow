@@ -1,5 +1,6 @@
 const { Sequelize } = require('sequelize');
 const { Actividad, Estado } = require('../models');
+const { Op } = require('sequelize');
 const { successResponse, errorResponse } = require('../utils/response');
 
 async function obtenerAvance(req, res) {
@@ -33,12 +34,38 @@ async function obtenerAvance(req, res) {
     const estadoCompletado = await Estado.obtenerPorNombre('Completado');
 
     let actividadesCompletadas = 0;
+    let tareasVencidas = [];
+    let tareasProximas = [];
+
+    const hoy = new Date();
+    // Vencen en los próximos 2 días
+    const dosDiasMas = new Date(hoy);
+    dosDiasMas.setDate(hoy.getDate() + 2);
 
     if (estadoCompletado) {
       actividadesCompletadas = await Actividad.count({
         where: {
           estado_id: estadoCompletado.id
         }
+      });
+
+      tareasVencidas = await Actividad.findAll({
+        where: {
+          estado_id: { [Op.ne]: estadoCompletado.id },
+          fecha_limite: { [Op.lt]: hoy }
+        },
+        order: [['fecha_limite', 'ASC']]
+      });
+
+      tareasProximas = await Actividad.findAll({
+        where: {
+          estado_id: { [Op.ne]: estadoCompletado.id },
+          fecha_limite: {
+            [Op.gte]: hoy,
+            [Op.lte]: dosDiasMas
+          }
+        },
+        order: [['fecha_limite', 'ASC']]
       });
     }
 
@@ -52,7 +79,9 @@ async function obtenerAvance(req, res) {
       actividadesCompletadas,
       porcentajeCompletado,
       actividadesPorEstado,
-      actividadesPorPrioridad
+      actividadesPorPrioridad,
+      tareasVencidas,
+      tareasProximas
     });
   } catch (error) {
     return errorResponse(res, 500, 'Error al consultar dashboard', error.message);
