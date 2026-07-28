@@ -6,6 +6,7 @@ const Usuario = require('./Usuario');
 const Actividad = require('./Actividad');
 const Evidencia = require('./Evidencia');
 const Comentario = require('./Comentario');
+const Asignacion = require('./Asignacion');
 
 Rol.hasMany(Usuario, {
   foreignKey: 'rol_id',
@@ -77,6 +78,40 @@ Comentario.belongsTo(Usuario, {
   as: 'usuario'
 });
 
+Actividad.hasMany(Asignacion, {
+  foreignKey: 'actividad_id',
+  as: 'asignaciones'
+});
+
+Asignacion.belongsTo(Actividad, {
+  foreignKey: 'actividad_id',
+  as: 'actividad'
+});
+
+Usuario.hasMany(Asignacion, {
+  foreignKey: 'usuario_id',
+  as: 'asignaciones'
+});
+
+Asignacion.belongsTo(Usuario, {
+  foreignKey: 'usuario_id',
+  as: 'usuario'
+});
+
+Actividad.belongsToMany(Usuario, {
+  through: Asignacion,
+  foreignKey: 'actividad_id',
+  otherKey: 'usuario_id',
+  as: 'responsables'
+});
+
+Usuario.belongsToMany(Actividad, {
+  through: Asignacion,
+  foreignKey: 'usuario_id',
+  otherKey: 'actividad_id',
+  as: 'actividadesAsignadas'
+});
+
 module.exports = {
   sequelize,
   Rol,
@@ -84,5 +119,6 @@ module.exports = {
   Usuario,
   Actividad,
   Evidencia,
-  Comentario
+  Comentario,
+  Asignacion
 };

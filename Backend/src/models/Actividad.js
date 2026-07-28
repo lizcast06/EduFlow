@@ -4,14 +4,14 @@ const sequelize = require('../config/database');
 class Actividad extends Model {
   static async listarConRelaciones() {
     return await Actividad.findAll({
-      include: ['creador', 'estado', 'evidencias', 'comentarios'],
+      include: ['creador', 'estado', 'evidencias', 'comentarios', 'responsables'],
       order: [['id', 'DESC']]
     });
   }
 
   static async obtenerDetalle(id) {
     return await Actividad.findByPk(id, {
-      include: ['creador', 'estado', 'evidencias', 'comentarios']
+      include: ['creador', 'estado', 'evidencias', 'comentarios', 'responsables']
     });
   }
 
