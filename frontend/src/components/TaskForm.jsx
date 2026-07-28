@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import { Type, AlignLeft, Calendar, User, PlusCircle } from 'lucide-react';
+import { Type, AlignLeft, Calendar, User, PlusCircle, Save } from 'lucide-react';
 import { usuarioService } from '../services/usuarioService';
 
-const TaskForm = ({ onSubmit, onCancel, initialData = {} }) => {
+const TaskForm = ({ onSubmit, onCancel, initialData = {}, isEditing = false }) => {
   const [titulo, setTitulo] = useState(initialData.titulo || '');
   const [descripcion, setDescripcion] = useState(initialData.descripcion || '');
   const [fecha_limite, setFechaLimite] = useState(initialData.fecha_limite || '');
@@ -144,8 +144,8 @@ const TaskForm = ({ onSubmit, onCancel, initialData = {} }) => {
           type="submit" 
           className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2.5 rounded-xl font-medium transition-colors shadow-md shadow-indigo-600/20 flex items-center justify-center gap-2"
         >
-          <PlusCircle size={18} />
-          Crear Actividad
+          {isEditing ? <Save size={18} /> : <PlusCircle size={18} />}
+          {isEditing ? 'Guardar Cambios' : 'Crear Actividad'}
         </button>
       </div>
 

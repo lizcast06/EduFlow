@@ -58,7 +58,7 @@ async function crearActividad(req, res) {
     let estadoIdFinal = estado_id;
 
     if (!estadoIdFinal) {
-      const estadoInicial = await Estado.obtenerPorNombre('Backlog');
+      const estadoInicial = await Estado.obtenerPorNombre('Pendiente');
       estadoIdFinal = estadoInicial ? estadoInicial.id : null;
     }
 
