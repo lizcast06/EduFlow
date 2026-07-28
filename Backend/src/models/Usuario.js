@@ -1,13 +1,7 @@
-const { DataTypes, Model, Op } = require('sequelize');
+const { DataTypes, Model } = require('sequelize');
 const sequelize = require('../config/database');
 
 class Usuario extends Model {
-  toJSON() {
-    const values = { ...this.get() };
-    delete values.password;
-    return values;
-  }
-
   static async listarConRol() {
     return await Usuario.findAll({
       include: ['rol'],
@@ -22,22 +16,9 @@ class Usuario extends Model {
   }
 
   static async obtenerPorEmail(email) {
-    return await Usuario.findOne({
+    return await Usuario.scope('conPassword').findOne({
       where: { email },
       include: ['rol']
-    });
-  }
-
-  static async obtenerActivosPorIds(ids) {
-    return await Usuario.findAll({
-      where: {
-        id: {
-          [Op.in]: ids
-        },
-        activo: true
-      },
-      include: ['rol'],
-      order: [['id', 'ASC']]
     });
   }
 }
@@ -96,17 +77,24 @@ Usuario.init(
           msg: 'El rol debe ser un número entero'
         }
       }
-    },
-    activo: {
-      type: DataTypes.BOOLEAN,
-      allowNull: false,
-      defaultValue: true
     }
   },
   {
     sequelize,
     modelName: 'Usuario',
-    tableName: 'usuario'
+    tableName: 'usuario',
+    defaultScope: {
+      attributes: {
+        exclude: ['password']
+      }
+    },
+    scopes: {
+      conPassword: {
+        attributes: {
+          include: ['password']
+        }
+      }
+    }
   }
 );
 

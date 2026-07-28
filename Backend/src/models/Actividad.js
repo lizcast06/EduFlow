@@ -5,16 +5,11 @@ class Actividad extends Model {
   static async listarConRelaciones() {
     return await Actividad.findAll({
       include: [
-        'creador',
-        'estado',
-        'evidencias',
-        'comentarios',
-        'responsables',
-        {
-          association: 'asignaciones',
-          include: ['usuario']
-        },
-        'historiales'
+        'creador', 
+        'estado', 
+        'evidencias', 
+        'comentarios', 
+        { association: 'asignaciones', include: ['usuario'] }
       ],
       order: [['id', 'DESC']]
     });
@@ -23,16 +18,11 @@ class Actividad extends Model {
   static async obtenerDetalle(id) {
     return await Actividad.findByPk(id, {
       include: [
-        'creador',
-        'estado',
-        'evidencias',
-        'comentarios',
-        'responsables',
-        {
-          association: 'asignaciones',
-          include: ['usuario']
-        },
-        'historiales'
+        'creador', 
+        'estado', 
+        'evidencias', 
+        'comentarios', 
+        { association: 'asignaciones', include: ['usuario'] }
       ]
     });
   }
