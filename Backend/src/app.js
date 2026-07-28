@@ -7,6 +7,7 @@ const estadoRoutes = require('./routes/estado.routes');
 const evidenciaRoutes = require('./routes/evidencia.routes');
 const comentarioRoutes = require('./routes/comentario.routes');
 const dashboardRoutes = require('./routes/dashboard.routes');
+const asignacionRoutes = require('./routes/asignacion.routes');
 const usuarioRoutes = require('./routes/usuario.routes');
 const historialRoutes = require('./routes/historial.routes');
 
@@ -36,6 +37,7 @@ app.use('/api', comentarioRoutes);
 app.use('/api', historialRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/usuarios', usuarioRoutes);
+app.use('/api/v1', asignacionRoutes);
 
 app.use(notFoundHandler);
 app.use(errorHandler);
