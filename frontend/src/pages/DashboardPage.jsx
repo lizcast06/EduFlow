@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { indicatorService } from '../services/indicatorService';
 import { activityService } from '../services/activityService';
 import { useAuth } from '../hooks/useAuth';
-import { CheckCircle2, Clock, Flag, AlertCircle, ChevronRight, Bell } from 'lucide-react';
+import { CheckCircle2, Clock, Flag, AlertCircle, ChevronRight, Bell, User } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 
 const DashboardPage = () => {
@@ -11,6 +11,7 @@ const DashboardPage = () => {
   const navigate = useNavigate();
   const [stats, setStats] = useState(null);
   const [urgentTasks, setUrgentTasks] = useState([]);
+  const [allActivities, setAllActivities] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -24,6 +25,7 @@ const DashboardPage = () => {
         activityService.getAll()
       ]);
       setStats(statsData);
+      setAllActivities(tasksData || []);
       
       if (statsData?.tareasVencidas || statsData?.tareasProximas) {
         const backendUrgent = [
@@ -55,9 +57,39 @@ const DashboardPage = () => {
     return found ? found.total : 0;
   };
 
-  const completed = getStatByState('Completado');
-  const inProgress = getStatByState('En Progreso');
-  const todo = getStatByState('Backlog') + getStatByState('Análisis') + getStatByState('Diseño') + getStatByState('Desarrollo') + getStatByState('Pruebas'); // Combine other states as 'Por Hacer'
+  const completed = getStatByState('Completada');
+  const inProgress = getStatByState('En Proceso');
+  const todo = getStatByState('Pendiente') + getStatByState('En Revisión');
+
+  // Calcular avance por responsable (HU-17)
+  const userStatsMap = {};
+  allActivities.forEach(act => {
+    if (act.asignaciones && act.asignaciones.length > 0) {
+      act.asignaciones.forEach(asignacion => {
+        const userId = asignacion.usuario?.id;
+        if (!userId) return;
+        if (!userStatsMap[userId]) {
+          userStatsMap[userId] = {
+            user: asignacion.usuario,
+            total: 0,
+            completadas: 0,
+            pendientes: 0,
+            enProceso: 0,
+            enRevision: 0,
+          };
+        }
+        
+        userStatsMap[userId].total += 1;
+        
+        const status = act.estado?.nombre;
+        if (status === 'Completada') userStatsMap[userId].completadas += 1;
+        else if (status === 'Pendiente') userStatsMap[userId].pendientes += 1;
+        else if (status === 'En Proceso') userStatsMap[userId].enProceso += 1;
+        else if (status === 'En Revisión') userStatsMap[userId].enRevision += 1;
+      });
+    }
+  });
+  const teamProgress = Object.values(userStatsMap);
 
   // Data for the chart
   const chartData = [
@@ -184,7 +216,7 @@ const DashboardPage = () => {
       </div>
 
       {/* Alerts Section */}
-      <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+      <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden mb-8">
         <div className="p-6 border-b border-gray-100 flex justify-between items-center">
           <h3 className="font-bold text-gray-900 flex items-center gap-2">
             <AlertCircle size={20} className="text-red-500" />
@@ -277,6 +309,67 @@ const DashboardPage = () => {
           )}
         </div>
       </div>
+
+      {/* Team Progress Section (HU-17) */}
+      {(user?.rol?.nombre === 'Docente' || user?.rol?.nombre === 'Administrador' || user?.rol?.nombre === 'Project Manager') && teamProgress.length > 0 && (
+        <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden p-6 mb-8">
+          <div className="border-b border-gray-100 pb-4 mb-6">
+            <h3 className="font-bold text-gray-900 flex items-center gap-2">
+              <User size={20} className="text-indigo-500" />
+              Avance por Responsable
+            </h3>
+            <p className="text-xs text-gray-500 mt-1">Monitoreo de carga de trabajo y progreso individual del equipo</p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {teamProgress.map((member, idx) => (
+              <div key={idx} className="bg-[#F8F9FC] rounded-2xl p-5 border border-gray-100 transition-all hover:shadow-md">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold">
+                    {member.user?.nombre?.[0]?.toUpperCase() || 'U'}
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-sm text-gray-900 truncate max-w-[150px]" title={member.user?.nombre}>{member.user?.nombre}</h4>
+                    <p className="text-xs text-gray-500 truncate max-w-[150px]">{member.user?.email}</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-center justify-between text-xs mb-2">
+                  <span className="font-semibold text-gray-600">Avance</span>
+                  <span className="font-bold text-emerald-600">
+                    {Math.round((member.completadas / member.total) * 100) || 0}%
+                  </span>
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-2 mb-4">
+                  <div 
+                    className="bg-emerald-500 h-2 rounded-full transition-all" 
+                    style={{ width: `${Math.round((member.completadas / member.total) * 100) || 0}%` }}
+                  ></div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div className="bg-white p-2 rounded-xl border border-gray-100 flex justify-between items-center">
+                    <span className="text-gray-500">Pendientes</span>
+                    <span className="font-bold text-gray-700">{member.pendientes}</span>
+                  </div>
+                  <div className="bg-white p-2 rounded-xl border border-gray-100 flex justify-between items-center">
+                    <span className="text-gray-500">En Proceso</span>
+                    <span className="font-bold text-indigo-600">{member.enProceso}</span>
+                  </div>
+                  <div className="bg-white p-2 rounded-xl border border-gray-100 flex justify-between items-center">
+                    <span className="text-gray-500">En Revisión</span>
+                    <span className="font-bold text-amber-600">{member.enRevision}</span>
+                  </div>
+                  <div className="bg-white p-2 rounded-xl border border-gray-100 flex justify-between items-center">
+                    <span className="text-gray-500">Completadas</span>
+                    <span className="font-bold text-emerald-600">{member.completadas}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
       
     </div>
   );
