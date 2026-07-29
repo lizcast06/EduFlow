@@ -27,6 +27,10 @@ const MainLayout = ({ children }) => {
     { path: '/board', label: 'Actividades', icon: Kanban },
   ];
 
+  if (user?.rol?.nombre === 'Administrador' || user?.rol?.nombre === 'Admin') {
+    navItems.push({ path: '/users', label: 'Usuarios', icon: User });
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col md:flex-row text-gray-800 font-sans">
       

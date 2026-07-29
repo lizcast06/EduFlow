@@ -35,7 +35,7 @@ const DashboardPage = () => {
         setUrgentTasks(backendUrgent.slice(0, 5));
       } else if (tasksData) {
         // Fallback if backend doesn't provide them
-        const pending = tasksData.filter(t => t.estado?.nombre !== 'Completado');
+        const pending = tasksData.filter(t => t.estado?.nombre !== 'Completada');
         pending.sort((a, b) => new Date(a.fecha_limite) - new Date(b.fecha_limite));
         setUrgentTasks(pending.slice(0, 5));
       }

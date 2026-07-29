@@ -23,6 +23,7 @@ const ActivityDetailPage = () => {
   const [activeTab, setActiveTab] = useState('comments'); // 'comments' or 'history'
   const [isEditingActivity, setIsEditingActivity] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
     loadData();
@@ -49,6 +50,11 @@ const ActivityDetailPage = () => {
     }
   };
 
+  const showError = (msg) => {
+    setErrorMessage(msg);
+    setTimeout(() => setErrorMessage(''), 5000);
+  };
+
   const handleAddEvidence = async (evidenceData) => {
     try {
       await evidenceService.add(id, evidenceData);
@@ -72,13 +78,13 @@ const ActivityDetailPage = () => {
   const handleAprobarTarea = async () => {
     try {
       if (evidences.length === 0) {
-        alert('No se puede aprobar sin evidencias.');
+        showError('No se puede aprobar sin evidencias.');
         return;
       }
       await activityService.updateStatus(id, 'Completada');
       loadData();
     } catch (error) {
-      alert(error.response?.data?.message || 'Error al aprobar la tarea');
+      showError(error.response?.data?.message || 'Error al aprobar la tarea');
     }
   };
 
@@ -102,7 +108,8 @@ const ActivityDetailPage = () => {
       loadData();
     } catch (error) {
       console.error('Error al cambiar estatus:', error);
-      alert('Hubo un error al cambiar el estatus.');
+      showError(error.response?.data?.message || 'Hubo un error al cambiar el estatus.');
+      loadData(); // Revert visual select box state on error
     }
   };
 
@@ -376,7 +383,7 @@ const ActivityDetailPage = () => {
             </div>
 
             {/* Controles de Docente */}
-            {user?.rol?.nombre === 'Docente' && evidences.length > 0 && activity?.estado?.nombre !== 'Completado' && (
+            {user?.rol?.nombre === 'Docente' && evidences.length > 0 && activity?.estado?.nombre !== 'Completada' && (
               <div className="mt-6 flex flex-col gap-3">
                 <p className="text-xs font-bold text-gray-500 uppercase text-center mb-1">Validación del Docente</p>
                 <div className="flex gap-2">
@@ -397,7 +404,7 @@ const ActivityDetailPage = () => {
             )}
 
             {/* Drag & Drop Visual Zone */}
-            {activity?.estado?.nombre !== 'Completado' && (
+            {activity?.estado?.nombre !== 'Completada' && (
               <div 
                 onDragOver={onDragOver}
                 onDragLeave={onDragLeave}

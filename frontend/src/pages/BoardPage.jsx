@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import KanbanColumn from '../components/KanbanColumn';
 import TaskCard from '../components/TaskCard';
 import TaskForm from '../components/TaskForm';
-import { Plus, X, Search, Filter } from 'lucide-react';
+import { Plus, X, Search, Filter, AlertCircle } from 'lucide-react';
 import { activityService } from '../services/activityService';
 import { useAuth } from '../hooks/useAuth';
 
@@ -11,9 +11,10 @@ const BoardPage = () => {
   const navigate = useNavigate();
   const [activities, setActivities] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const { user } = useAuth();
 
-  const columns = ['Backlog', 'Análisis', 'Diseño', 'Desarrollo', 'Pruebas', 'Completado'];
+  const columns = ['Pendiente', 'En Proceso', 'En Revisión', 'Completada'];
 
   useEffect(() => {
     loadActivities();
@@ -26,6 +27,11 @@ const BoardPage = () => {
     } catch (error) {
       console.error('Error fetching activities:', error);
     }
+  };
+
+  const showError = (msg) => {
+    setErrorMessage(msg);
+    setTimeout(() => setErrorMessage(''), 5000);
   };
 
   const handleDragStart = (e, taskId) => {
@@ -45,6 +51,7 @@ const BoardPage = () => {
       loadActivities();
     } catch (error) {
       console.error('Error updating status:', error);
+      showError(error.response?.data?.message || 'Error al cambiar el estatus de la actividad.');
       loadActivities();
     }
   };
@@ -74,7 +81,24 @@ const BoardPage = () => {
   });
 
   return (
-    <div className="p-6 md:p-10 h-screen flex flex-col bg-[#F9FAFB] overflow-hidden">
+    <div className="p-6 md:p-10 h-screen flex flex-col bg-[#F9FAFB] overflow-hidden relative">
+      
+      {/* Toast Error Message */}
+      {errorMessage && (
+        <div className="absolute top-6 left-1/2 -translate-x-1/2 z-50 animate-in slide-in-from-top-4 fade-in duration-300">
+          <div className="bg-white border-l-4 border-red-500 shadow-xl rounded-xl px-5 py-4 flex items-start gap-3 min-w-[320px] max-w-md">
+            <AlertCircle className="text-red-500 shrink-0 mt-0.5" size={20} />
+            <div className="flex-1">
+              <h4 className="text-sm font-bold text-gray-900">Acción denegada</h4>
+              <p className="text-sm text-gray-600 mt-1">{errorMessage}</p>
+            </div>
+            <button onClick={() => setErrorMessage('')} className="text-gray-400 hover:text-gray-600 transition-colors">
+              <X size={18} />
+            </button>
+          </div>
+        </div>
+      )}
+
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-8 gap-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Actividades</h1>

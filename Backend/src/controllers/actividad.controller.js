@@ -93,7 +93,7 @@ async function crearActividad(req, res) {
       actividad_id: nuevaActividad.id,
       usuario_id: req.usuario.id,
       accion: 'Actividad creada',
-      detalles: `El usuario creó la actividad en estado ${estadoInicial.nombre} con prioridad ${prioridad}`
+      detalles: `El usuario creó la actividad en estado ${estado.nombre} con prioridad ${prioridad}`
     });
 
     const actividadDetalle = await Actividad.obtenerDetalle(nuevaActividad.id);
@@ -212,7 +212,7 @@ async function cambiarEstado(req, res) {
       return errorResponse(res, 400, 'El estado indicado no existe');
     }
 
-    if (estadoEncontrado.nombre === 'Completado') {
+    if (estadoEncontrado.nombre === 'Completada') {
       const evidencias = await Evidencia.findAll({ where: { actividad_id: id } });
       if (evidencias.length === 0) {
         return errorResponse(res, 400, 'No se puede mover a Completado sin adjuntar una evidencia');

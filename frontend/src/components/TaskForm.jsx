@@ -23,9 +23,16 @@ const TaskForm = ({ onSubmit, onCancel, initialData = {}, isEditing = false }) =
     fetchEstudiantes();
   }, []);
 
-  const handleSubmit = (e) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSubmit({ titulo, descripcion, fecha_limite, prioridad, asignados });
+    setIsSubmitting(true);
+    try {
+      await onSubmit({ titulo, descripcion, fecha_limite, prioridad, asignados });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleToggleEstudiante = (id) => {
@@ -136,16 +143,24 @@ const TaskForm = ({ onSubmit, onCancel, initialData = {}, isEditing = false }) =
         <button 
           type="button" 
           onClick={onCancel}
-          className="flex-1 px-4 py-2.5 rounded-xl border border-gray-200 text-gray-600 font-medium hover:bg-gray-50 transition-colors"
+          disabled={isSubmitting}
+          className="flex-1 px-4 py-2.5 rounded-xl border border-gray-200 text-gray-600 font-medium hover:bg-gray-50 transition-colors disabled:opacity-50"
         >
           Cancelar
         </button>
         <button 
           type="submit" 
-          className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2.5 rounded-xl font-medium transition-colors shadow-md shadow-indigo-600/20 flex items-center justify-center gap-2"
+          disabled={isSubmitting}
+          className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2.5 rounded-xl font-medium transition-colors shadow-md shadow-indigo-600/20 flex items-center justify-center gap-2 disabled:opacity-50"
         >
-          {isEditing ? <Save size={18} /> : <PlusCircle size={18} />}
-          {isEditing ? 'Guardar Cambios' : 'Crear Actividad'}
+          {isSubmitting ? (
+            <span>Guardando...</span>
+          ) : (
+            <>
+              {isEditing ? <Save size={18} /> : <PlusCircle size={18} />}
+              {isEditing ? 'Guardar Cambios' : 'Crear Actividad'}
+            </>
+          )}
         </button>
       </div>
 
