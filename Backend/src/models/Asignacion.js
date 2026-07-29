@@ -1,24 +1,7 @@
 const { DataTypes, Model } = require('sequelize');
 const sequelize = require('../config/database');
 
-class Asignacion extends Model {
-  static async listarPorActividad(actividadId) {
-    return await Asignacion.findAll({
-      where: { actividad_id: actividadId },
-      include: ['actividad', 'usuario'],
-      order: [['fecha_asignacion', 'DESC']]
-    });
-  }
-
-  static async obtenerAsignacion(actividadId, usuarioId) {
-    return await Asignacion.findOne({
-      where: {
-        actividad_id: actividadId,
-        usuario_id: usuarioId
-      }
-    });
-  }
-}
+class Asignacion extends Model {}
 
 Asignacion.init(
   {

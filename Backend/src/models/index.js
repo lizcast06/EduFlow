@@ -9,10 +9,6 @@ const Comentario = require('./Comentario');
 const Asignacion = require('./Asignacion');
 const Historial = require('./Historial');
 
-// =========================
-// Rol <-> Usuario
-// =========================
-
 Rol.hasMany(Usuario, {
   foreignKey: 'rol_id',
   as: 'usuarios'
@@ -22,7 +18,6 @@ Usuario.belongsTo(Rol, {
   foreignKey: 'rol_id',
   as: 'rol'
 });
-
 
 Usuario.hasMany(Actividad, {
   foreignKey: 'creador_id',
@@ -34,7 +29,6 @@ Actividad.belongsTo(Usuario, {
   as: 'creador'
 });
 
-
 Estado.hasMany(Actividad, {
   foreignKey: 'estado_id',
   as: 'actividades'
@@ -44,7 +38,6 @@ Actividad.belongsTo(Estado, {
   foreignKey: 'estado_id',
   as: 'estado'
 });
-
 
 Actividad.hasMany(Evidencia, {
   foreignKey: 'actividad_id',
@@ -65,7 +58,6 @@ Evidencia.belongsTo(Usuario, {
   foreignKey: 'usuario_id',
   as: 'usuario'
 });
-
 
 Actividad.hasMany(Comentario, {
   foreignKey: 'actividad_id',
@@ -105,21 +97,6 @@ Usuario.hasMany(Asignacion, {
 Asignacion.belongsTo(Usuario, {
   foreignKey: 'usuario_id',
   as: 'usuario'
-});
-
-
-Actividad.belongsToMany(Usuario, {
-  through: Asignacion,
-  foreignKey: 'actividad_id',
-  otherKey: 'usuario_id',
-  as: 'responsables'
-});
-
-Usuario.belongsToMany(Actividad, {
-  through: Asignacion,
-  foreignKey: 'usuario_id',
-  otherKey: 'actividad_id',
-  as: 'actividadesAsignadas'
 });
 
 Actividad.hasMany(Historial, {
