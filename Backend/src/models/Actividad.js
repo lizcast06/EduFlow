@@ -85,12 +85,12 @@ Actividad.init(
       }
     },
     prioridad: {
-      type: DataTypes.ENUM('Alta', 'Media', 'Baja'),
+      type: DataTypes.ENUM('Baja', 'Media', 'Alta', 'Urgente'),
       allowNull: false,
       validate: {
         isIn: {
-          args: [['Alta', 'Media', 'Baja']],
-          msg: 'La prioridad debe ser Alta, Media o Baja'
+          args: [['Baja', 'Media', 'Alta', 'Urgente']],
+          msg: 'La prioridad debe ser Baja, Media, Alta o Urgente'
         }
       }
     },

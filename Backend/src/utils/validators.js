@@ -12,7 +12,7 @@ function isValidPassword(password) {
 }
 
 function isValidPriority(prioridad) {
-  return ['Alta', 'Media', 'Baja'].includes(prioridad);
+  return ['Baja', 'Media', 'Alta', 'Urgente'].includes(prioridad);
 }
 
 function isValidUrl(url) {

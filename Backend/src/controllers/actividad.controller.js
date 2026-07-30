@@ -52,14 +52,21 @@ async function crearActividad(req, res) {
     }
 
     if (!isValidPriority(prioridad)) {
-      return errorResponse(res, 400, 'La prioridad debe ser Alta, Media o Baja');
+      return errorResponse(
+        res,
+        400,
+        'La prioridad debe ser Baja, Media, Alta o Urgente'
+      );
     }
 
+    let estadoInicial = null;
     let estadoIdFinal = estado_id;
 
     if (!estadoIdFinal) {
-      const estadoInicial = await Estado.obtenerPorNombre('Backlog');
+      estadoInicial = await Estado.obtenerPorNombre('Backlog');
       estadoIdFinal = estadoInicial ? estadoInicial.id : null;
+    } else {
+      estadoInicial = await Estado.obtenerPorId(estadoIdFinal);
     }
 
     if (!estadoIdFinal || !isPositiveInteger(estadoIdFinal)) {
@@ -126,7 +133,11 @@ async function actualizarActividad(req, res) {
     }
 
     if (prioridad && !isValidPriority(prioridad)) {
-      return errorResponse(res, 400, 'La prioridad debe ser Alta, Media o Baja');
+      return errorResponse(
+        res,
+        400,
+        'La prioridad debe ser Baja, Media, Alta o Urgente'
+      );
     }
 
     if (estado_id) {
