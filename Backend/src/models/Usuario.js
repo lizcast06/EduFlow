@@ -77,6 +77,11 @@ Usuario.init(
           msg: 'El rol debe ser un número entero'
         }
       }
+    },
+    activo: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: true
     }
   },
   {

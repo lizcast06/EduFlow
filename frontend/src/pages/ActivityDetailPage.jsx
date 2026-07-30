@@ -6,7 +6,8 @@ import { commentService } from '../services/commentService';
 import { AuthContext } from '../context/AuthContext';
 import CommentList from '../components/CommentList';
 import EvidenceLinkInput from '../components/EvidenceLinkInput';
-import { ArrowLeft, ExternalLink, Clock, AlertCircle, UploadCloud, Calendar, User, CheckCircle2, History, MessageSquare, Check, X } from 'lucide-react';
+import TaskForm from '../components/TaskForm';
+import { ArrowLeft, ExternalLink, Clock, AlertCircle, UploadCloud, Calendar, User, CheckCircle2, History, MessageSquare, Check, X, Edit3, Trash2 } from 'lucide-react';
 
 const ActivityDetailPage = () => {
   const { id } = useParams();
@@ -20,6 +21,9 @@ const ActivityDetailPage = () => {
   const [loading, setLoading] = useState(true);
   const [isDragging, setIsDragging] = useState(false);
   const [activeTab, setActiveTab] = useState('comments'); // 'comments' or 'history'
+  const [isEditingActivity, setIsEditingActivity] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
     loadData();
@@ -46,6 +50,11 @@ const ActivityDetailPage = () => {
     }
   };
 
+  const showError = (msg) => {
+    setErrorMessage(msg);
+    setTimeout(() => setErrorMessage(''), 5000);
+  };
+
   const handleAddEvidence = async (evidenceData) => {
     try {
       await evidenceService.add(id, evidenceData);
@@ -69,13 +78,13 @@ const ActivityDetailPage = () => {
   const handleAprobarTarea = async () => {
     try {
       if (evidences.length === 0) {
-        alert('No se puede aprobar sin evidencias.');
+        showError('No se puede aprobar sin evidencias.');
         return;
       }
-      await activityService.updateStatus(id, 'Completado');
+      await activityService.updateStatus(id, 'Completada');
       loadData();
     } catch (error) {
-      alert(error.response?.data?.message || 'Error al aprobar la tarea');
+      showError(error.response?.data?.message || 'Error al aprobar la tarea');
     }
   };
 
@@ -84,11 +93,44 @@ const ActivityDetailPage = () => {
     if (feedback) {
       try {
         await commentService.create(id, { contenido: `[RECHAZO] ${feedback}` });
-        await activityService.updateStatus(id, 'En desarrollo');
+        await activityService.updateStatus(id, 'En Proceso');
         loadData();
       } catch (error) {
         console.error('Error al rechazar:', error);
       }
+    }
+  };
+
+  const handleStatusChange = async (e) => {
+    const newStatus = e.target.value;
+    try {
+      await activityService.updateStatus(id, newStatus);
+      loadData();
+    } catch (error) {
+      console.error('Error al cambiar estatus:', error);
+      showError(error.response?.data?.message || 'Hubo un error al cambiar el estatus.');
+      loadData(); // Revert visual select box state on error
+    }
+  };
+
+  const handleUpdateActivity = async (updatedData) => {
+    try {
+      await activityService.update(id, updatedData);
+      setIsEditingActivity(false);
+      loadData();
+    } catch (error) {
+      console.error("Error al actualizar la actividad:", error);
+      alert("Hubo un error al actualizar la actividad.");
+    }
+  };
+
+  const confirmDeleteActivity = async () => {
+    try {
+      await activityService.delete(id);
+      navigate('/board');
+    } catch (error) {
+      console.error("Error al eliminar la actividad:", error);
+      alert("Hubo un error al eliminar la actividad.");
     }
   };
 
@@ -115,6 +157,13 @@ const ActivityDetailPage = () => {
   const onDragLeave = () => setIsDragging(false);
   const onDrop = (e) => { e.preventDefault(); setIsDragging(false); };
 
+  // RN-08 Check: Solo creador o Administrador pueden editar
+  const canEdit = user && (user.id === activity.creador?.id || user.rol?.nombre === 'Administrador');
+
+  // RN-09 Check: Un responsable asignado puede cambiar el estatus de su propia actividad
+  const isAssignee = activity.asignaciones?.some(a => a.usuario?.id === user?.id);
+  const canChangeStatus = canEdit || isAssignee;
+
   return (
     <div className="p-6 md:p-10 max-w-6xl mx-auto min-h-screen bg-[#F9FAFB]">
       <button 
@@ -129,63 +178,112 @@ const ActivityDetailPage = () => {
         {/* Main Info Column */}
         <div className="lg:col-span-2 flex flex-col gap-8">
           
-          <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
-            <div className="flex items-center gap-3 mb-4">
-              <span className="text-xs font-bold tracking-wider uppercase bg-indigo-50 text-indigo-600 px-3 py-1 rounded-lg border border-indigo-100">
-                {activity.estado?.nombre || 'General'}
-              </span>
-              <span className={`text-xs font-bold tracking-wider uppercase px-3 py-1 rounded-lg shadow-sm text-white ${activity.prioridad === 'Alta' ? 'bg-red-500 shadow-red-500/30' : activity.prioridad === 'Media' ? 'bg-amber-500 shadow-amber-500/30' : 'bg-emerald-500 shadow-emerald-500/30'}`}>
-                {activity.prioridad || 'Prioridad'}
-              </span>
+          {isEditingActivity ? (
+            <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
+              <h2 className="text-xl font-bold mb-6">Editar Actividad</h2>
+              <TaskForm 
+                isEditing={true}
+                initialData={{
+                   titulo: activity.titulo,
+                   descripcion: activity.descripcion,
+                   prioridad: activity.prioridad,
+                   fecha_limite: new Date(activity.fecha_limite).toISOString().split('T')[0],
+                   asignados: activity.asignaciones?.map(a => a.usuario?.id) || []
+                }}
+                onSubmit={handleUpdateActivity}
+                onCancel={() => setIsEditingActivity(false)}
+              />
             </div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-6">{activity.titulo}</h1>
-            
-            <div className="bg-[#F8F9FC] p-6 rounded-2xl border border-gray-100 mb-6">
-              <h3 className="text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide">Descripción de la actividad</h3>
-              <p className="text-gray-600 leading-relaxed text-sm whitespace-pre-wrap">
-                {activity.descripcion || 'Sin descripción detallada.'}
-              </p>
-            </div>
-
-            <div className="flex flex-wrap gap-6 text-sm">
-              <div className="flex items-center gap-3 text-gray-600">
-                <div className="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-500">
-                  <User size={18} />
+          ) : (
+            <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  {canChangeStatus ? (
+                    <select
+                      value={activity.estado?.nombre || 'Pendiente'}
+                      onChange={handleStatusChange}
+                      className="text-xs font-bold tracking-wider uppercase bg-indigo-50 text-indigo-600 px-3 py-1 rounded-lg border border-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow cursor-pointer appearance-none"
+                    >
+                      <option value="Pendiente">Pendiente</option>
+                      <option value="En Proceso">En Proceso</option>
+                      <option value="En Revisión">En Revisión</option>
+                      <option value="Completada">Completada</option>
+                    </select>
+                  ) : (
+                    <span className="text-xs font-bold tracking-wider uppercase bg-indigo-50 text-indigo-600 px-3 py-1 rounded-lg border border-indigo-100">
+                      {activity.estado?.nombre || 'General'}
+                    </span>
+                  )}
+                  <span className={`text-xs font-bold tracking-wider uppercase px-3 py-1 rounded-lg shadow-sm text-white ${activity.prioridad === 'Alta' ? 'bg-red-500 shadow-red-500/30' : activity.prioridad === 'Media' ? 'bg-amber-500 shadow-amber-500/30' : 'bg-emerald-500 shadow-emerald-500/30'}`}>
+                    {activity.prioridad || 'Prioridad'}
+                  </span>
                 </div>
-                <div>
-                  <p className="text-xs text-gray-400 font-semibold uppercase">Asignado por</p>
-                  <p className="font-bold text-gray-800">{activity.creador?.nombre || 'Docente'}</p>
-                </div>
+                {canEdit && (
+                  <div className="flex gap-2">
+                    <button 
+                      onClick={() => setIsEditingActivity(true)}
+                      className="flex items-center gap-2 text-sm font-semibold text-indigo-600 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-lg transition-colors"
+                    >
+                      <Edit3 size={16} /> Editar
+                    </button>
+                    <button 
+                      onClick={() => setIsDeleteDialogOpen(true)}
+                      className="flex items-center gap-2 text-sm font-semibold text-red-600 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-lg transition-colors"
+                    >
+                      <Trash2 size={16} /> Eliminar
+                    </button>
+                  </div>
+                )}
+              </div>
+              <h1 className="text-3xl font-bold text-gray-900 mb-6">{activity.titulo}</h1>
+              
+              <div className="bg-[#F8F9FC] p-6 rounded-2xl border border-gray-100 mb-6">
+                <h3 className="text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide">Descripción de la actividad</h3>
+                <p className="text-gray-600 leading-relaxed text-sm whitespace-pre-wrap">
+                  {activity.descripcion || 'Sin descripción detallada.'}
+                </p>
               </div>
 
-              {activity.asignaciones && activity.asignaciones.length > 0 && (
-                <div className="flex items-start gap-3 text-gray-600">
-                  <div className="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-500 shrink-0">
+              <div className="flex flex-wrap gap-6 text-sm">
+                <div className="flex items-center gap-3 text-gray-600">
+                  <div className="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-500">
                     <User size={18} />
                   </div>
                   <div>
-                    <p className="text-xs text-gray-400 font-semibold uppercase">Asignado a</p>
-                    <div className="flex flex-col gap-1 mt-1">
-                      {activity.asignaciones.map((asig, idx) => (
-                        <p key={idx} className="font-bold text-gray-800 text-sm">
-                          {asig.usuario?.nombre}
-                        </p>
-                      ))}
-                    </div>
+                    <p className="text-xs text-gray-400 font-semibold uppercase">Asignado por</p>
+                    <p className="font-bold text-gray-800">{activity.creador?.nombre || 'Docente'}</p>
                   </div>
                 </div>
-              )}
-              <div className="flex items-center gap-3 text-gray-600">
-                <div className="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-500">
-                  <Calendar size={18} />
-                </div>
-                <div>
-                  <p className="text-xs text-gray-400 font-semibold uppercase">Fecha de inicio</p>
-                  <p className="font-bold text-gray-800">{new Date(activity.createdAt).toLocaleDateString('es-ES')}</p>
+
+                {activity.asignaciones && activity.asignaciones.length > 0 && (
+                  <div className="flex items-start gap-3 text-gray-600">
+                    <div className="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-500 shrink-0">
+                      <User size={18} />
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-400 font-semibold uppercase">Asignado a</p>
+                      <div className="flex flex-col gap-1 mt-1">
+                        {activity.asignaciones.map((asig, idx) => (
+                          <p key={idx} className="font-bold text-gray-800 text-sm">
+                            {asig.usuario?.nombre}
+                          </p>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+                <div className="flex items-center gap-3 text-gray-600">
+                  <div className="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-500">
+                    <Calendar size={18} />
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-400 font-semibold uppercase">Fecha de inicio</p>
+                    <p className="font-bold text-gray-800">{new Date(activity.createdAt).toLocaleDateString('es-ES')}</p>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          )}
 
           <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 min-h-[400px]">
              <div className="flex items-center gap-6 mb-6 border-b border-gray-100 pb-4">
@@ -285,7 +383,7 @@ const ActivityDetailPage = () => {
             </div>
 
             {/* Controles de Docente */}
-            {user?.rol?.nombre === 'Docente' && evidences.length > 0 && activity?.estado?.nombre !== 'Completado' && (
+            {user?.rol?.nombre === 'Docente' && evidences.length > 0 && activity?.estado?.nombre !== 'Completada' && (
               <div className="mt-6 flex flex-col gap-3">
                 <p className="text-xs font-bold text-gray-500 uppercase text-center mb-1">Validación del Docente</p>
                 <div className="flex gap-2">
@@ -306,7 +404,7 @@ const ActivityDetailPage = () => {
             )}
 
             {/* Drag & Drop Visual Zone */}
-            {activity?.estado?.nombre !== 'Completado' && (
+            {activity?.estado?.nombre !== 'Completada' && (
               <div 
                 onDragOver={onDragOver}
                 onDragLeave={onDragLeave}
@@ -328,6 +426,35 @@ const ActivityDetailPage = () => {
           
         </div>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {isDeleteDialogOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
+          <div className="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl relative animate-in fade-in zoom-in duration-200">
+            <div className="w-12 h-12 rounded-full bg-red-50 text-red-500 flex items-center justify-center mb-4 border border-red-100">
+              <AlertCircle size={24} />
+            </div>
+            <h3 className="text-xl font-bold text-gray-900 mb-2">Eliminar Actividad</h3>
+            <p className="text-gray-500 text-sm mb-6 leading-relaxed">
+              ¿Estás seguro de que deseas eliminar esta actividad? Esta acción no se puede deshacer y borrará permanentemente todos los datos asociados.
+            </p>
+            <div className="flex gap-3">
+              <button 
+                onClick={() => setIsDeleteDialogOpen(false)}
+                className="flex-1 px-4 py-2.5 rounded-xl border border-gray-200 text-gray-700 font-bold hover:bg-gray-50 transition-colors"
+              >
+                Cancelar
+              </button>
+              <button 
+                onClick={confirmDeleteActivity}
+                className="flex-1 bg-red-500 hover:bg-red-600 text-white px-4 py-2.5 rounded-xl font-bold transition-all shadow-md shadow-red-500/20"
+              >
+                Sí, eliminar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
