@@ -149,6 +149,29 @@ async function actualizarActividad(req, res) {
       estado_id: estado_id || actividad.estado_id
     });
 
+    const { asignados } = req.body;
+    let asignadosMsg = '';
+    if (asignados && Array.isArray(asignados)) {
+      await Asignacion.destroy({ where: { actividad_id: id } });
+      if (asignados.length > 0) {
+        const asignaciones = asignados.map(usuario_id => ({
+          actividad_id: id,
+          usuario_id
+        }));
+        await Asignacion.bulkCreate(asignaciones);
+        asignadosMsg = ' Se actualizaron los responsables.';
+      } else {
+        asignadosMsg = ' Se removieron los responsables.';
+      }
+    }
+
+    await Historial.create({
+      actividad_id: id,
+      usuario_id: req.usuario ? req.usuario.id : null,
+      accion: 'Actividad actualizada',
+      detalles: `Se actualizaron los detalles de la actividad (título, descripción, fecha o prioridad).${asignadosMsg}`
+    });
+
     const actividadDetalle = await Actividad.obtenerDetalle(id);
 
     return successResponse(res, 200, 'Actividad actualizada correctamente', actividadDetalle);
