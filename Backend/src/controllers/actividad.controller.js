@@ -1,4 +1,4 @@
-const { Actividad, Estado, Asignacion, Evidencia, Historial } = require('../models');
+const { Actividad, Estado, Asignacion, Evidencia, Historial, Comentario } = require('../models');
 const { successResponse, errorResponse } = require('../utils/response');
 const {
   isEmpty,
@@ -8,9 +8,23 @@ const {
 
 async function listarActividades(req, res) {
   try {
-    const actividades = await Actividad.listarConRelaciones();
+    const filtros = {
+      estado: req.query.estado || req.query.estatus,
+      prioridad: req.query.prioridad,
+      responsable: req.query.responsable
+    };
 
-    return successResponse(res, 200, 'Actividades consultadas correctamente', actividades);
+    const actividades = await Actividad.listarConRelaciones(
+      req.usuario,
+      filtros
+    );
+
+    return successResponse(
+      res,
+      200,
+      'Actividades consultadas correctamente',
+      actividades
+    );
   } catch (error) {
     return errorResponse(res, 500, 'Error al consultar actividades', error.message);
   }
@@ -193,7 +207,7 @@ async function eliminarActividad(req, res) {
 async function cambiarEstado(req, res) {
   try {
     const { id } = req.params;
-    const { estado_id, estado } = req.body;
+    const { estado_id, estado, comentario } = req.body;
 
     if (!isPositiveInteger(id)) {
       return errorResponse(res, 400, 'El id de la actividad no es válido');
@@ -223,6 +237,32 @@ async function cambiarEstado(req, res) {
       return errorResponse(res, 400, 'El estado indicado no existe');
     }
 
+    // RN-19: Si una actividad Completada se reabre,
+    // debe existir un comentario de justificación.
+
+    const estadoActual = await Estado.obtenerPorId(actividad.estado_id);
+
+    const esReapertura =
+      estadoActual &&
+      estadoActual.nombre === 'Completado' &&
+      estadoEncontrado.nombre !== 'Completado';
+
+    if (esReapertura) {
+      if (!comentario || comentario.trim() === '') {
+        return errorResponse(
+          res,
+          400,
+          'Debe proporcionar un comentario para reabrir una actividad completada'
+        );
+      }
+
+      await Comentario.create({
+        actividad_id: actividad.id,
+        usuario_id: req.usuario.id,
+        contenido: comentario.trim()
+      });
+    }
+
     if (estadoEncontrado.nombre === 'Completado') {
       const evidencias = await Evidencia.findAll({ where: { actividad_id: id } });
       if (evidencias.length === 0) {
@@ -234,9 +274,9 @@ async function cambiarEstado(req, res) {
 
     await Historial.create({
       actividad_id: id,
-      usuario_id: req.usuario ? req.usuario.id : null,
+      usuario_id: req.usuario.id,
       accion: 'Cambio de estado',
-      detalles: `La actividad pasó a estado: ${estadoEncontrado.nombre}`
+      detalles: `Estado cambiado de ${estadoActual.nombre} a ${estadoEncontrado.nombre}`
     });
 
     return successResponse(res, 200, 'Estado de actividad actualizado correctamente', actividadActualizada);
