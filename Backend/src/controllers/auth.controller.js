@@ -109,6 +109,10 @@ async function login(req, res) {
       return errorResponse(res, 401, 'Credenciales incorrectas');
     }
 
+    if (!usuario.activo) {
+      return errorResponse(res, 403, 'Tu cuenta ha sido desactivada. Contacta al administrador.');
+    }
+
     const passwordCorrecta = await bcrypt.compare(password, usuario.password);
 
     if (!passwordCorrecta) {

@@ -31,7 +31,7 @@ async function obtenerAvance(req, res) {
       group: ['prioridad']
     });
 
-    const estadoCompletado = await Estado.obtenerPorNombre('Completado');
+    const estadoCompletado = await Estado.obtenerPorNombre('Completada');
 
     let actividadesCompletadas = 0;
     let tareasVencidas = [];

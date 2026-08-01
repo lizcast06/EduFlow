@@ -57,6 +57,14 @@ async function crearEvidencia(req, res) {
       archivo_url
     });
 
+    const { Historial } = require('../models');
+    await Historial.create({
+      actividad_id: id,
+      usuario_id: req.usuario.id,
+      accion: 'Evidencia adjuntada',
+      detalles: `Se adjuntó un nuevo enlace de evidencia.`
+    });
+
     const evidenciaDetalle = await Evidencia.obtenerPorId(evidencia.id);
 
     return successResponse(res, 201, 'Evidencia registrada correctamente', evidenciaDetalle);
