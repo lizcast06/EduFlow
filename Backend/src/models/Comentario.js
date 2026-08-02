@@ -2,19 +2,31 @@ const { DataTypes, Model } = require('sequelize');
 const sequelize = require('../config/database');
 
 class Comentario extends Model {
-  static async listarPorActividad(actividadId) {
-    return await Comentario.findAll({
-      where: { actividad_id: actividadId },
-      include: ['actividad', 'usuario'],
-      order: [['fecha', 'ASC']]
-    });
-  }
+static async listarPorActividad(actividadId) {
+  return await Comentario.findAll({
+    where: { actividad_id: actividadId },
+    include: [
+      'actividad',
+      {
+        association: 'usuario',
+        attributes: ['id', 'nombre', 'email']
+      }
+    ],
+    order: [['fecha', 'ASC']]
+  });
+}
 
-  static async obtenerPorId(id) {
-    return await Comentario.findByPk(id, {
-      include: ['actividad', 'usuario']
-    });
-  }
+static async obtenerPorId(id) {
+  return await Comentario.findByPk(id, {
+    include: [
+      'actividad',
+      {
+        association: 'usuario',
+        attributes: ['id', 'nombre', 'email']
+      }
+    ]
+  });
+}
 }
 
 Comentario.init(

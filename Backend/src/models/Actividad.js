@@ -1,31 +1,116 @@
-const { DataTypes, Model } = require('sequelize');
+const { DataTypes, Model, Op } = require('sequelize');
 const sequelize = require('../config/database');
 
 class Actividad extends Model {
-  static async listarConRelaciones() {
+  static async listarConRelaciones(usuario, filtros = {}) {
+
+    const where = {};
+
+    const include = [
+      {
+        association: 'creador',
+        attributes: ['id', 'nombre', 'email']
+      },
+      'evidencias',
+      'comentarios',
+      'historiales',
+      {
+        association: 'estado'
+      },
+      {
+        association: 'asignaciones',
+        include: [
+          {
+            association: 'usuario',
+            attributes: ['id', 'nombre', 'email']
+          }
+        ]
+      },
+      {
+        association: 'responsables',
+        attributes: ['id', 'nombre', 'email']
+      }
+    ];
+
+    // Filtro por prioridad
+    if (filtros.prioridad) {
+      where.prioridad = filtros.prioridad;
+    }
+
+    // Filtro por estado
+    if (filtros.estado) {
+      const estadoInclude = include.find(i => i.association === 'estado');
+      estadoInclude.where = {
+        nombre: filtros.estado
+      };
+      estadoInclude.required = true;
+    }
+
+    // Filtro por responsable
+    if (filtros.responsable) {
+      const responsablesInclude = include.find(
+        i => i.association === 'responsables'
+      );
+
+      responsablesInclude.where = {
+        id: filtros.responsable
+      };
+
+      responsablesInclude.required = true;
+    }
+
+    // RN-04
+    if (usuario && usuario.rol === 'Estudiante') {
+
+      const responsablesInclude = include.find(
+        i => i.association === 'responsables'
+      );
+
+      responsablesInclude.where = {
+        ...(responsablesInclude.where || {}),
+        id: usuario.id
+      };
+
+      responsablesInclude.required = true;
+    }
+
     return await Actividad.findAll({
-      include: [
-        'creador', 
-        'estado', 
-        'evidencias', 
-        'comentarios', 
-        { association: 'asignaciones', include: ['usuario'] }
-      ],
+      where,
+      include,
       order: [['id', 'DESC']]
     });
+
   }
 
-  static async obtenerDetalle(id) {
-    return await Actividad.findByPk(id, {
-      include: [
-        'creador', 
-        'estado', 
-        'evidencias', 
-        'comentarios', 
-        { association: 'asignaciones', include: ['usuario'] }
-      ]
-    });
-  }
+ static async obtenerDetalle(id) {
+  return await Actividad.findByPk(id, {
+    include: [
+      {
+        association: 'creador',
+        attributes: ['id', 'nombre', 'email']
+      },
+      {
+        association: 'estado'
+      },
+      'evidencias',
+      'comentarios',
+      {
+        association: 'responsables',
+        attributes: ['id', 'nombre', 'email']
+      },
+      {
+        association: 'asignaciones',
+        include: [
+          {
+            association: 'usuario',
+            attributes: ['id', 'nombre', 'email']
+          }
+        ]
+      },
+      'historiales'
+    ]
+  });
+}
 
   static async cambiarEstado(id, estadoId) {
     const actividad = await Actividad.findByPk(id);
@@ -75,12 +160,12 @@ Actividad.init(
       }
     },
     prioridad: {
-      type: DataTypes.ENUM('Alta', 'Media', 'Baja'),
+      type: DataTypes.ENUM('Baja', 'Media', 'Alta', 'Urgente'),
       allowNull: false,
       validate: {
         isIn: {
-          args: [['Alta', 'Media', 'Baja']],
-          msg: 'La prioridad debe ser Alta, Media o Baja'
+          args: [['Baja', 'Media', 'Alta', 'Urgente']],
+          msg: 'La prioridad debe ser Baja, Media, Alta o Urgente'
         }
       }
     },
