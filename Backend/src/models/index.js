@@ -99,6 +99,20 @@ Asignacion.belongsTo(Usuario, {
   as: 'usuario'
 });
 
+Actividad.belongsToMany(Usuario, {
+  through: Asignacion,
+  foreignKey: 'actividad_id',
+  otherKey: 'usuario_id',
+  as: 'responsables'
+});
+
+Usuario.belongsToMany(Actividad, {
+  through: Asignacion,
+  foreignKey: 'usuario_id',
+  otherKey: 'actividad_id',
+  as: 'actividadesAsignadas'
+});
+
 Actividad.hasMany(Historial, {
   foreignKey: 'actividad_id',
   as: 'historiales'
