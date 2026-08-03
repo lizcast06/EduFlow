@@ -81,7 +81,7 @@ const ActivityDetailPage = () => {
         showError('No se puede aprobar sin evidencias.');
         return;
       }
-      await activityService.updateStatus(id, 'Completada');
+      await activityService.updateStatus(id, 'Completado');
       loadData();
     } catch (error) {
       showError(error.response?.data?.message || 'Error al aprobar la tarea');
@@ -383,7 +383,7 @@ const ActivityDetailPage = () => {
             </div>
 
             {/* Controles de Docente */}
-            {user?.rol?.nombre === 'Docente' && evidences.length > 0 && activity?.estado?.nombre !== 'Completada' && (
+            {user?.rol?.nombre === 'Docente' && evidences.length > 0 && activity?.estado?.nombre !== 'Completado' && (
               <div className="mt-6 flex flex-col gap-3">
                 <p className="text-xs font-bold text-gray-500 uppercase text-center mb-1">Validación del Docente</p>
                 <div className="flex gap-2">
@@ -404,7 +404,7 @@ const ActivityDetailPage = () => {
             )}
 
             {/* Drag & Drop Visual Zone */}
-            {activity?.estado?.nombre !== 'Completada' && (
+            {activity?.estado?.nombre !== 'Completado' && (
               <div 
                 onDragOver={onDragOver}
                 onDragLeave={onDragLeave}

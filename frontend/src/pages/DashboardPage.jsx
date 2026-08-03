@@ -35,7 +35,7 @@ const DashboardPage = () => {
         setUrgentTasks(backendUrgent.slice(0, 5));
       } else if (tasksData) {
         // Fallback if backend doesn't provide them
-        const pending = tasksData.filter(t => t.estado?.nombre !== 'Completada');
+        const pending = tasksData.filter(t => t.estado?.nombre !== 'Completado');
         pending.sort((a, b) => new Date(a.fecha_limite) - new Date(b.fecha_limite));
         setUrgentTasks(pending.slice(0, 5));
       }
@@ -57,7 +57,7 @@ const DashboardPage = () => {
     return found ? found.total : 0;
   };
 
-  const completed = getStatByState('Completada');
+  const completed = getStatByState('Completado');
   const inProgress = getStatByState('En Proceso');
   const todo = getStatByState('Pendiente') + getStatByState('En Revisión');
 
@@ -82,7 +82,7 @@ const DashboardPage = () => {
         userStatsMap[userId].total += 1;
         
         const status = act.estado?.nombre;
-        if (status === 'Completada') userStatsMap[userId].completadas += 1;
+        if (status === 'Completado') userStatsMap[userId].completadas += 1;
         else if (status === 'Pendiente') userStatsMap[userId].pendientes += 1;
         else if (status === 'En Proceso') userStatsMap[userId].enProceso += 1;
         else if (status === 'En Revisión') userStatsMap[userId].enRevision += 1;

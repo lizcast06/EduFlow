@@ -18,7 +18,7 @@ const BoardPage = () => {
   const [students, setStudents] = useState([]);
   const [showFilters, setShowFilters] = useState(false);
 
-  const columns = ['Pendiente', 'En Proceso', 'En Revisión', 'Completada'];
+  const columns = ['Backlog', 'Análisis', 'Diseño', 'Desarrollo', 'Testing', 'Completado'];
 
   useEffect(() => {
     loadActivities();
@@ -111,7 +111,7 @@ const BoardPage = () => {
       actDate.setHours(0, 0, 0, 0);
 
       if (filterDate === 'vencidas') {
-        matchesDate = actDate < today && act.estado?.nombre !== 'Completada';
+        matchesDate = actDate < today && act.estado?.nombre !== 'Completado';
       } else if (filterDate === 'hoy') {
         matchesDate = actDate.getTime() === today.getTime();
       } else if (filterDate === 'semana') {
