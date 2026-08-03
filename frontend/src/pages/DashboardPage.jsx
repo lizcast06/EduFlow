@@ -58,8 +58,8 @@ const DashboardPage = () => {
   };
 
   const completed = getStatByState('Completado');
-  const inProgress = getStatByState('En Proceso');
-  const todo = getStatByState('Pendiente') + getStatByState('En Revisión');
+  const inProgress = getStatByState('Desarrollo') + getStatByState('Testing');
+  const todo = getStatByState('Backlog') + getStatByState('Análisis') + getStatByState('Diseño');
 
   // Calcular avance por responsable (HU-17)
   const userStatsMap = {};
@@ -83,9 +83,8 @@ const DashboardPage = () => {
         
         const status = act.estado?.nombre;
         if (status === 'Completado') userStatsMap[userId].completadas += 1;
-        else if (status === 'Pendiente') userStatsMap[userId].pendientes += 1;
-        else if (status === 'En Proceso') userStatsMap[userId].enProceso += 1;
-        else if (status === 'En Revisión') userStatsMap[userId].enRevision += 1;
+        else if (status === 'Backlog' || status === 'Análisis' || status === 'Diseño') userStatsMap[userId].pendientes += 1;
+        else if (status === 'Desarrollo' || status === 'Testing') userStatsMap[userId].enProceso += 1;
       });
     }
   });

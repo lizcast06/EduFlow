@@ -10,13 +10,8 @@ async function testDb() {
       database: 'railway',
     });
 
-    console.log('Conectado a Railway MySQL.');
-    
-    const [estados] = await connection.query('SELECT * FROM estado');
-    console.log('Estados en DB:', estados);
-
-    const [actividades] = await connection.query('SELECT * FROM actividad');
-    console.log('Actividades:', actividades);
+    const [usuarios] = await connection.query('SELECT id, nombre, email, rol_id FROM usuario');
+    console.log('Usuarios:', usuarios);
     
     await connection.end();
   } catch (error) {
