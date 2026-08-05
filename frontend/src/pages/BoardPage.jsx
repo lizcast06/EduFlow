@@ -132,7 +132,7 @@ const BoardPage = () => {
   });
 
   return (
-    <div className="p-6 md:p-10 h-screen flex flex-col bg-[#F9FAFB] overflow-hidden relative">
+    <div className="p-6 md:p-10 h-screen flex flex-col bg-slate-50 overflow-hidden relative">
 
       {/* Toast Error Message */}
       {errorMessage && (
@@ -140,10 +140,10 @@ const BoardPage = () => {
           <div className="bg-white border-l-4 border-red-500 shadow-xl rounded-xl px-5 py-4 flex items-start gap-3 min-w-[320px] max-w-md">
             <AlertCircle className="text-red-500 shrink-0 mt-0.5" size={20} />
             <div className="flex-1">
-              <h4 className="text-sm font-bold text-gray-900">Acción denegada</h4>
-              <p className="text-sm text-gray-600 mt-1">{errorMessage}</p>
+              <h4 className="text-sm font-bold text-slate-900">Acción denegada</h4>
+              <p className="text-sm text-slate-600 mt-1">{errorMessage}</p>
             </div>
-            <button onClick={() => setErrorMessage('')} className="text-gray-400 hover:text-gray-600 transition-colors">
+            <button onClick={() => setErrorMessage('')} className="text-slate-400 hover:text-slate-600 transition-colors">
               <X size={18} />
             </button>
           </div>
@@ -152,15 +152,15 @@ const BoardPage = () => {
 
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-8 gap-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Actividades</h1>
-          <p className="text-sm text-gray-500 mt-1">Gestiona el flujo de trabajo de las tareas</p>
+          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Actividades</h1>
+          <p className="text-sm text-slate-500 mt-1">Gestiona el flujo de trabajo de las tareas</p>
         </div>
 
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full lg:w-auto">
 
           <button
             onClick={() => setShowFilters(!showFilters)}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium transition-colors border ${showFilters ? 'bg-indigo-50 border-indigo-200 text-indigo-600' : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50'}`}
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium transition-colors border ${showFilters ? 'bg-indigo-50 border-indigo-200 text-indigo-600' : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'}`}
           >
             <Filter size={18} />
             <span>Filtros</span>
@@ -171,7 +171,7 @@ const BoardPage = () => {
 
           {/* Search Input */}
           <div className="relative w-full sm:w-64">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
               <Search size={16} />
             </div>
             <input
@@ -179,7 +179,7 @@ const BoardPage = () => {
               placeholder="Buscar tarea..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400 transition-all shadow-sm"
+              className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400 transition-all shadow-sm"
             />
           </div>
 
@@ -197,9 +197,9 @@ const BoardPage = () => {
 
       {/* Expanded Filters Panel */}
       {showFilters && (
-        <div className="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm mb-8 animate-in slide-in-from-top-2 fade-in duration-200">
+        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm mb-8 animate-in slide-in-from-top-2 fade-in duration-200">
           <div className="flex justify-between items-center mb-4">
-            <h3 className="text-sm font-bold text-gray-800">Filtros Avanzados</h3>
+            <h3 className="text-sm font-bold text-slate-800">Filtros Avanzados</h3>
             <button
               onClick={() => { setFilterPriority(''); setFilterAssignee(''); setFilterDate(''); }}
               className="text-xs text-indigo-600 hover:text-indigo-800 font-semibold"
@@ -211,11 +211,11 @@ const BoardPage = () => {
 
             {/* Priority Filter */}
             <div>
-              <label className="block text-xs font-semibold text-gray-500 mb-2 uppercase tracking-wide">Prioridad</label>
+              <label className="block text-xs font-semibold text-slate-500 mb-2 uppercase tracking-wide">Prioridad</label>
               <select
                 value={filterPriority}
                 onChange={e => setFilterPriority(e.target.value)}
-                className="w-full bg-gray-50 border border-gray-200 rounded-xl p-2.5 text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
               >
                 <option value="">Todas las prioridades</option>
                 <option value="Alta">Alta</option>
@@ -227,11 +227,11 @@ const BoardPage = () => {
             {/* Assignee Filter */}
             {user?.rol?.nombre === 'Docente' && (
               <div>
-                <label className="block text-xs font-semibold text-gray-500 mb-2 uppercase tracking-wide">Responsable</label>
+                <label className="block text-xs font-semibold text-slate-500 mb-2 uppercase tracking-wide">Responsable</label>
                 <select
                   value={filterAssignee}
                   onChange={e => setFilterAssignee(e.target.value)}
-                  className="w-full bg-gray-50 border border-gray-200 rounded-xl p-2.5 text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
                 >
                   <option value="">Cualquier responsable</option>
                   {students.map(student => (
@@ -243,11 +243,11 @@ const BoardPage = () => {
 
             {/* Date Filter */}
             <div>
-              <label className="block text-xs font-semibold text-gray-500 mb-2 uppercase tracking-wide">Fecha Límite</label>
+              <label className="block text-xs font-semibold text-slate-500 mb-2 uppercase tracking-wide">Fecha Límite</label>
               <select
                 value={filterDate}
                 onChange={e => setFilterDate(e.target.value)}
-                className="w-full bg-gray-50 border border-gray-200 rounded-xl p-2.5 text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
               >
                 <option value="">Cualquier fecha</option>
                 <option value="vencidas">Vencidas</option>
@@ -282,7 +282,7 @@ const BoardPage = () => {
                 />
               ))}
               {colActivities.length === 0 && (
-                <div className="border-2 border-dashed border-gray-200 rounded-xl p-4 text-center text-sm text-gray-400 mt-2">
+                <div className="border-2 border-dashed border-slate-200 rounded-xl p-4 text-center text-sm text-slate-400 mt-2">
                   Sin actividades
                 </div>
               )}
@@ -295,11 +295,11 @@ const BoardPage = () => {
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-            <div className="flex justify-between items-center p-5 border-b border-gray-100">
-              <h2 className="text-xl font-bold text-gray-900">Nueva Actividad</h2>
+            <div className="flex justify-between items-center p-5 border-b border-slate-100">
+              <h2 className="text-xl font-bold text-slate-900">Nueva Actividad</h2>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
+                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
               >
                 <X size={20} />
               </button>

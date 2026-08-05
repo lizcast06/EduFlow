@@ -1,13 +1,14 @@
 const StatusBadge = ({ status }) => {
   const colors = {
-    'To Do': 'bg-gray-200 text-gray-700',
-    'In Progress': 'bg-blue-100 text-blue-700',
-    'Done': 'bg-green-100 text-green-700',
+    'Pendiente': 'bg-indigo-100 text-indigo-700 border-indigo-200',
+    'En Proceso': 'bg-amber-50 text-amber-600 border-amber-200',
+    'En Revisión': 'bg-slate-100 text-slate-600 border-slate-200',
+    'Completado': 'bg-emerald-50 text-emerald-600 border-emerald-200',
   };
-  const colorClass = colors[status] || 'bg-gray-100 text-gray-800';
+  const colorClass = colors[status] || 'bg-slate-100 text-slate-600 border-slate-200';
 
   return (
-    <span className={`px-2 py-1 rounded text-xs font-medium ${colorClass}`}>
+    <span className={`px-2 py-0.5 rounded-md text-[11px] font-bold uppercase tracking-wider border ${colorClass}`}>
       {status}
     </span>
   );

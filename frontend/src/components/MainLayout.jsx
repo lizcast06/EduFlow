@@ -35,7 +35,7 @@ const MainLayout = ({ children }) => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col md:flex-row text-gray-800 font-sans overflow-x-hidden w-full relative">
+    <div className="min-h-screen bg-slate-50 flex flex-col md:flex-row text-slate-900 font-sans overflow-x-hidden w-full relative">
       
       {/* Mobile Top Navbar */}
       <header className="md:hidden bg-indigo-950 border-b border-indigo-900 px-4 py-3 flex items-center justify-between shadow-sm z-30 text-white">
@@ -56,7 +56,7 @@ const MainLayout = ({ children }) => {
       {/* Sidebar (Desktop and Mobile drawer) */}
       <aside className={`
         fixed inset-y-0 left-0 transform md:relative md:translate-x-0 transition-transform duration-300 ease-in-out
-        w-64 bg-[#232145] text-white z-40 flex flex-col justify-between
+        w-64 bg-indigo-950 text-white z-40 flex flex-col justify-between
         ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}
         md:flex md:w-64
       `}>
@@ -75,7 +75,7 @@ const MainLayout = ({ children }) => {
 
           {/* User Profile Card */}
           <div className="px-4 mb-6">
-            <div className="bg-[#312F5E] p-3 rounded-xl flex items-center gap-3 shadow-inner border border-white/5">
+            <div className="bg-white/10 p-3 rounded-xl flex items-center gap-3 shadow-inner border border-white/5">
               <div className="w-8 h-8 rounded-full bg-indigo-500 flex items-center justify-center font-bold text-sm">
                 {user?.nombre?.[0]?.toUpperCase() || <User size={14} />}
               </div>
@@ -102,7 +102,7 @@ const MainLayout = ({ children }) => {
                       flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all
                       ${isActive 
                         ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/20' 
-                        : 'text-indigo-200 hover:bg-[#312F5E] hover:text-white'}
+                        : 'text-indigo-200 hover:bg-white/10 hover:text-white'}
                     `}
                   >
                     <Icon size={18} className={isActive ? 'text-white' : 'text-indigo-300'} />
@@ -118,7 +118,7 @@ const MainLayout = ({ children }) => {
         <div className="p-4 mb-4">
           <button
             onClick={handleLogout}
-            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-indigo-300 hover:bg-[#312F5E] hover:text-white transition-colors"
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-indigo-300 hover:bg-white/10 hover:text-white transition-colors"
           >
             <LogOut size={18} />
             Cerrar sesión
@@ -135,7 +135,7 @@ const MainLayout = ({ children }) => {
       )}
 
       {/* Main Content Area */}
-      <main className="flex-1 flex flex-col min-w-0 overflow-y-auto bg-gray-50/50">
+      <main className="flex-1 flex flex-col min-w-0 overflow-y-auto bg-slate-50/50">
         <div className="flex-1">
           {children}
         </div>

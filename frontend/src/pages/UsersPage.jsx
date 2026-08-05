@@ -107,13 +107,13 @@ const UsersPage = () => {
     <div className="p-6 md:p-10 min-h-screen flex flex-col bg-[#F9FAFB]">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Gestión de Usuarios</h1>
-          <p className="text-sm text-gray-500 mt-1">Administra el acceso de estudiantes y docentes</p>
+          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Gestión de Usuarios</h1>
+          <p className="text-sm text-slate-500 mt-1">Administra el acceso de estudiantes y docentes</p>
         </div>
         
         <div className="flex w-full md:w-auto items-center gap-4">
           <div className="relative flex-1 md:w-64">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
               <Search size={16} />
             </div>
             <input 
@@ -121,7 +121,7 @@ const UsersPage = () => {
               placeholder="Buscar usuario..." 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400 transition-all shadow-sm"
+              className="w-full pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400 transition-all shadow-sm"
             />
           </div>
           <button
@@ -134,13 +134,13 @@ const UsersPage = () => {
         </div>
       </div>
 
-      <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+      <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
         {loading ? (
-          <div className="p-12 text-center text-gray-500 font-medium">Cargando usuarios...</div>
+          <div className="p-12 text-center text-slate-500 font-medium">Cargando usuarios...</div>
         ) : (
           <div className="overflow-x-auto custom-scrollbar">
-            <table className="w-full text-left text-sm text-gray-500">
-              <thead className="text-xs text-gray-700 uppercase bg-gray-50 border-b border-gray-100">
+            <table className="w-full text-left text-sm text-slate-500">
+              <thead className="text-xs text-slate-700 uppercase bg-slate-50 border-b border-slate-100">
                 <tr>
                   <th className="px-6 py-4 font-bold tracking-wider">Usuario</th>
                   <th className="px-6 py-4 font-bold tracking-wider">Rol</th>
@@ -151,17 +151,17 @@ const UsersPage = () => {
               <tbody>
                 {filteredUsers.length === 0 ? (
                   <tr>
-                    <td colSpan="4" className="px-6 py-8 text-center text-gray-500">
+                    <td colSpan="4" className="px-6 py-8 text-center text-slate-500">
                       No se encontraron usuarios
                     </td>
                   </tr>
                 ) : (
                   filteredUsers.map((user) => (
-                    <tr key={user.id} className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
+                    <tr key={user.id} className="border-b border-slate-50 hover:bg-slate-50 transition-colors">
                       <td className="px-6 py-4">
                         <div className="flex flex-col">
-                          <span className="font-bold text-gray-900">{user.nombre}</span>
-                          <span className="text-xs text-gray-500">{user.email}</span>
+                          <span className="font-bold text-slate-900">{user.nombre}</span>
+                          <span className="text-xs text-slate-500">{user.email}</span>
                         </div>
                       </td>
                       <td className="px-6 py-4">
@@ -185,14 +185,14 @@ const UsersPage = () => {
                         <div className="flex items-center justify-end gap-2">
                           <button
                             onClick={() => handleOpenEdit(user)}
-                            className="p-2 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                            className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
                             title="Editar usuario"
                           >
                             <Edit2 size={16} />
                           </button>
                           <button
                             onClick={() => handleToggleStatus(user)}
-                            className={`p-2 rounded-lg transition-colors ${user.activo ? 'text-gray-400 hover:text-red-600 hover:bg-red-50' : 'text-gray-400 hover:text-emerald-600 hover:bg-emerald-50'}`}
+                            className={`p-2 rounded-lg transition-colors ${user.activo ? 'text-slate-400 hover:text-red-600 hover:bg-red-50' : 'text-slate-400 hover:text-emerald-600 hover:bg-emerald-50'}`}
                             title={user.activo ? 'Desactivar usuario' : 'Activar usuario'}
                           >
                             {user.activo ? <PowerOff size={16} /> : <Power size={16} />}

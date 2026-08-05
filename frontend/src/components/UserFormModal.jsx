@@ -51,13 +51,13 @@ const UserFormModal = ({ onClose, onSave, initialData }) => {
       <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-200">
         
         {/* Header */}
-        <div className="px-6 py-5 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
-          <h2 className="text-xl font-bold text-gray-900 tracking-tight">
+        <div className="px-6 py-5 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+          <h2 className="text-xl font-bold text-slate-900 tracking-tight">
             {isEditing ? 'Editar Usuario' : 'Nuevo Usuario'}
           </h2>
           <button 
             onClick={onClose}
-            className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors"
+            className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-colors"
           >
             <X size={20} />
           </button>
@@ -74,7 +74,7 @@ const UserFormModal = ({ onClose, onSave, initialData }) => {
           <div className="space-y-4">
             {/* Nombre */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5 flex items-center gap-2">
+              <label className="block text-sm font-medium text-slate-700 mb-1.5 flex items-center gap-2">
                 <User size={16} className="text-indigo-500" />
                 Nombre completo
               </label>
@@ -85,13 +85,13 @@ const UserFormModal = ({ onClose, onSave, initialData }) => {
                 onChange={handleChange}
                 placeholder="Ej. Juan Pérez"
                 required
-                className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
               />
             </div>
 
             {/* Email */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5 flex items-center gap-2">
+              <label className="block text-sm font-medium text-slate-700 mb-1.5 flex items-center gap-2">
                 <Mail size={16} className="text-indigo-500" />
                 Correo Electrónico
               </label>
@@ -102,14 +102,14 @@ const UserFormModal = ({ onClose, onSave, initialData }) => {
                 onChange={handleChange}
                 placeholder="ejemplo@correo.com"
                 required
-                className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
               />
             </div>
 
             {/* Password */}
             {!isEditing && (
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5 flex items-center gap-2">
+                <label className="block text-sm font-medium text-slate-700 mb-1.5 flex items-center gap-2">
                   <Lock size={16} className="text-indigo-500" />
                   Contraseña
                 </label>
@@ -120,14 +120,14 @@ const UserFormModal = ({ onClose, onSave, initialData }) => {
                   onChange={handleChange}
                   placeholder="Mínimo 6 caracteres"
                   required={!isEditing}
-                  className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
                 />
               </div>
             )}
 
             {/* Rol */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5 flex items-center gap-2">
+              <label className="block text-sm font-medium text-slate-700 mb-1.5 flex items-center gap-2">
                 <Shield size={16} className="text-indigo-500" />
                 Rol del sistema
               </label>
@@ -135,7 +135,7 @@ const UserFormModal = ({ onClose, onSave, initialData }) => {
                 name="rol_id"
                 value={formData.rol_id}
                 onChange={handleChange}
-                className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm text-gray-800 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm text-slate-800 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
               >
                 <option value={3}>Administrador</option>
                 <option value={1}>Docente</option>
@@ -148,7 +148,7 @@ const UserFormModal = ({ onClose, onSave, initialData }) => {
             <button 
               type="button" 
               onClick={onClose}
-              className="flex-1 px-4 py-2.5 rounded-xl border border-gray-200 text-gray-600 font-medium hover:bg-gray-50 transition-colors"
+              className="flex-1 px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-medium hover:bg-slate-50 transition-colors"
             >
               Cancelar
             </button>

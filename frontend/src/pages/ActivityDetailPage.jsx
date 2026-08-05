@@ -162,7 +162,7 @@ const ActivityDetailPage = () => {
   };
 
   if (loading) {
-    return <div className="p-8 text-center text-gray-500 font-medium">Cargando detalles de la actividad...</div>;
+    return <div className="p-8 text-center text-slate-500 font-medium">Cargando detalles de la actividad...</div>;
   }
 
   if (!activity) {
@@ -206,7 +206,7 @@ const ActivityDetailPage = () => {
         <div className="lg:col-span-2 flex flex-col gap-8">
           
           {isEditingActivity ? (
-            <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
+            <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100">
               <h2 className="text-xl font-bold mb-6">Editar Actividad</h2>
               <TaskForm 
                 isEditing={true}
@@ -222,14 +222,14 @@ const ActivityDetailPage = () => {
               />
             </div>
           ) : (
-            <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
+            <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
                   {canChangeStatus ? (
                     <select
                       value={activity.estado?.nombre || 'Pendiente'}
                       onChange={handleStatusChange}
-                      className="text-xs font-bold tracking-wider uppercase bg-indigo-50 text-indigo-600 px-3 py-1 rounded-lg border border-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow cursor-pointer appearance-none"
+                      className="text-xs font-bold tracking-wider uppercase bg-indigo-100 text-indigo-700 px-3 py-1 rounded-lg border border-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow cursor-pointer appearance-none"
                     >
                       <option value="Pendiente">Pendiente</option>
                       <option value="En Proceso">En Proceso</option>
@@ -237,7 +237,7 @@ const ActivityDetailPage = () => {
                       {canEdit && <option value="Completado">Completado</option>}
                     </select>
                   ) : (
-                    <span className="text-xs font-bold tracking-wider uppercase bg-indigo-50 text-indigo-600 px-3 py-1 rounded-lg border border-indigo-100">
+                    <span className="text-xs font-bold tracking-wider uppercase bg-indigo-100 text-indigo-700 px-3 py-1 rounded-lg border border-indigo-200">
                       {activity.estado?.nombre || 'General'}
                     </span>
                   )}
@@ -262,36 +262,36 @@ const ActivityDetailPage = () => {
                   </div>
                 )}
               </div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-6">{activity.titulo}</h1>
+              <h1 className="text-3xl font-bold text-slate-900 mb-6">{activity.titulo}</h1>
               
-              <div className="bg-[#F8F9FC] p-6 rounded-2xl border border-gray-100 mb-6">
-                <h3 className="text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide">Descripción de la actividad</h3>
-                <p className="text-gray-600 leading-relaxed text-sm whitespace-pre-wrap">
+              <div className="bg-[#F8F9FC] p-6 rounded-2xl border border-slate-100 mb-6">
+                <h3 className="text-sm font-bold text-slate-700 mb-2 uppercase tracking-wide">Descripción de la actividad</h3>
+                <p className="text-slate-600 leading-relaxed text-sm whitespace-pre-wrap">
                   {activity.descripcion || 'Sin descripción detallada.'}
                 </p>
               </div>
 
               <div className="flex flex-wrap gap-6 text-sm">
-                <div className="flex items-center gap-3 text-gray-600">
+                <div className="flex items-center gap-3 text-slate-600">
                   <div className="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-500">
                     <User size={18} />
                   </div>
                   <div>
-                    <p className="text-xs text-gray-400 font-semibold uppercase">Asignado por</p>
-                    <p className="font-bold text-gray-800">{activity.creador?.nombre || 'Docente'}</p>
+                    <p className="text-xs text-slate-400 font-semibold uppercase">Asignado por</p>
+                    <p className="font-bold text-slate-800">{activity.creador?.nombre || 'Docente'}</p>
                   </div>
                 </div>
 
                 {activity.asignaciones && activity.asignaciones.length > 0 && (
-                  <div className="flex items-start gap-3 text-gray-600">
+                  <div className="flex items-start gap-3 text-slate-600">
                     <div className="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-500 shrink-0">
                       <User size={18} />
                     </div>
                     <div>
-                      <p className="text-xs text-gray-400 font-semibold uppercase">Asignado a</p>
+                      <p className="text-xs text-slate-400 font-semibold uppercase">Asignado a</p>
                       <div className="flex flex-col gap-1 mt-1">
                         {activity.asignaciones.map((asig, idx) => (
-                          <p key={idx} className="font-bold text-gray-800 text-sm">
+                          <p key={idx} className="font-bold text-slate-800 text-sm">
                             {asig.usuario?.nombre}
                           </p>
                         ))}
@@ -299,21 +299,21 @@ const ActivityDetailPage = () => {
                     </div>
                   </div>
                 )}
-                <div className="flex items-center gap-3 text-gray-600">
+                <div className="flex items-center gap-3 text-slate-600">
                   <div className="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-500">
                     <Calendar size={18} />
                   </div>
                   <div>
-                    <p className="text-xs text-gray-400 font-semibold uppercase">Fecha de inicio</p>
-                    <p className="font-bold text-gray-800">{activity.fecha_creacion ? new Date(activity.fecha_creacion).toLocaleDateString('es-ES') : 'Sin fecha'}</p>
+                    <p className="text-xs text-slate-400 font-semibold uppercase">Fecha de inicio</p>
+                    <p className="font-bold text-slate-800">{activity.fecha_creacion ? new Date(activity.fecha_creacion).toLocaleDateString('es-ES') : 'Sin fecha'}</p>
                   </div>
                 </div>
               </div>
             </div>
           )}
 
-          <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 min-h-[400px]">
-             <div className="flex items-center gap-4 md:gap-6 mb-6 border-b border-gray-100 pb-4 overflow-x-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+          <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 min-h-[400px]">
+             <div className="flex items-center gap-4 md:gap-6 mb-6 border-b border-slate-100 pb-4 overflow-x-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
                 <style>{`
                   .overflow-x-auto::-webkit-scrollbar {
                     display: none;
@@ -321,19 +321,19 @@ const ActivityDetailPage = () => {
                 `}</style>
                 <button 
                   onClick={() => setActiveTab('comments')}
-                  className={`flex items-center gap-2 text-base md:text-lg font-bold pb-4 -mb-[17px] border-b-2 transition-colors whitespace-nowrap shrink-0 ${activeTab === 'comments' ? 'border-indigo-600 text-gray-900' : 'border-transparent text-gray-400 hover:text-gray-600'}`}
+                  className={`flex items-center gap-2 text-base md:text-lg font-bold pb-4 -mb-[17px] border-b-2 transition-colors whitespace-nowrap shrink-0 ${activeTab === 'comments' ? 'border-indigo-600 text-slate-900' : 'border-transparent text-slate-400 hover:text-slate-600'}`}
                 >
                   <MessageSquare size={18} className="md:w-5 md:h-5" /> Discusión y Comentarios
                 </button>
                 <button 
                   onClick={() => setActiveTab('history')}
-                  className={`flex items-center gap-2 text-base md:text-lg font-bold pb-4 -mb-[17px] border-b-2 transition-colors whitespace-nowrap shrink-0 ${activeTab === 'history' ? 'border-indigo-600 text-gray-900' : 'border-transparent text-gray-400 hover:text-gray-600'}`}
+                  className={`flex items-center gap-2 text-base md:text-lg font-bold pb-4 -mb-[17px] border-b-2 transition-colors whitespace-nowrap shrink-0 ${activeTab === 'history' ? 'border-indigo-600 text-slate-900' : 'border-transparent text-slate-400 hover:text-slate-600'}`}
                 >
                   <History size={18} className="md:w-5 md:h-5" /> Historial
                 </button>
                 <button 
                   onClick={() => setActiveTab('grades')}
-                  className={`flex items-center gap-2 text-base md:text-lg font-bold pb-4 -mb-[17px] border-b-2 transition-colors whitespace-nowrap shrink-0 ${activeTab === 'grades' ? 'border-indigo-600 text-gray-900' : 'border-transparent text-gray-400 hover:text-gray-600'}`}
+                  className={`flex items-center gap-2 text-base md:text-lg font-bold pb-4 -mb-[17px] border-b-2 transition-colors whitespace-nowrap shrink-0 ${activeTab === 'grades' ? 'border-indigo-600 text-slate-900' : 'border-transparent text-slate-400 hover:text-slate-600'}`}
                 >
                   <CheckCircle2 size={18} className="md:w-5 md:h-5" /> Calificaciones
                 </button>
@@ -344,19 +344,19 @@ const ActivityDetailPage = () => {
              ) : activeTab === 'history' ? (
                 <div className="flex flex-col gap-4">
                   {history.length === 0 ? (
-                    <p className="text-gray-500 italic text-center py-8">No hay historial registrado.</p>
+                    <p className="text-slate-500 italic text-center py-8">No hay historial registrado.</p>
                   ) : (
                     history.map((evento) => (
-                      <div key={evento.id} className="flex gap-4 p-4 rounded-xl border border-gray-50 bg-gray-50/50">
+                      <div key={evento.id} className="flex gap-4 p-4 rounded-xl border border-slate-50 bg-slate-50/50">
                         <div className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-500 flex items-center justify-center shrink-0">
                           <History size={16} />
                         </div>
                         <div>
                           <div className="flex items-center gap-2 mb-1">
-                            <span className="font-bold text-gray-800">{evento.accion}</span>
-                            <span className="text-xs text-gray-400">• {new Date(evento.fecha).toLocaleString('es-ES')}</span>
+                            <span className="font-bold text-slate-800">{evento.accion}</span>
+                            <span className="text-xs text-slate-400">• {new Date(evento.fecha).toLocaleString('es-ES')}</span>
                           </div>
-                          <p className="text-sm text-gray-600 mb-1">{evento.detalles}</p>
+                          <p className="text-sm text-slate-600 mb-1">{evento.detalles}</p>
                           <p className="text-xs text-indigo-500 font-medium">Por: {evento.usuario ? evento.usuario.nombre : 'Sistema'}</p>
                         </div>
                       </div>
@@ -366,21 +366,21 @@ const ActivityDetailPage = () => {
              ) : (
                 <div className="flex flex-col gap-6">
                   {!activity.asignaciones || activity.asignaciones.length === 0 ? (
-                    <p className="text-gray-500 italic text-center py-8">No hay alumnos asignados a esta actividad.</p>
+                    <p className="text-slate-500 italic text-center py-8">No hay alumnos asignados a esta actividad.</p>
                   ) : (
                     activity.asignaciones
                       .filter(asig => canEdit || asig.usuario_id === user.id)
                       .map((asig) => (
-                      <div key={asig.usuario_id} className="p-4 rounded-xl border border-gray-100 bg-gray-50 flex flex-wrap gap-4 items-center justify-between">
+                      <div key={asig.usuario_id} className="p-4 rounded-xl border border-slate-100 bg-slate-50 flex flex-wrap gap-4 items-center justify-between">
                         <div className="flex-1 min-w-[200px]">
-                          <p className="font-bold text-gray-800 truncate" title={asig.usuario?.nombre}>{asig.usuario?.nombre}</p>
+                          <p className="font-bold text-slate-800 truncate" title={asig.usuario?.nombre}>{asig.usuario?.nombre}</p>
                           {asig.calificacion !== null && (
                             <p className="text-sm font-semibold text-emerald-600 mt-0.5">
                               Calificación: {asig.calificacion}/10
                             </p>
                           )}
                           {asig.retroalimentacion && !canEdit && (
-                            <p className="text-sm mt-2 text-gray-700 italic border-l-2 border-indigo-300 pl-3 line-clamp-3">" {asig.retroalimentacion} "</p>
+                            <p className="text-sm mt-2 text-slate-700 italic border-l-2 border-indigo-300 pl-3 line-clamp-3">" {asig.retroalimentacion} "</p>
                           )}
                         </div>
                         {canEdit && (
@@ -407,7 +407,7 @@ const ActivityDetailPage = () => {
                                   {asig.calificacion !== null && (
                                     <button
                                       onClick={() => setEditingGrades({ ...editingGrades, [asig.usuario_id]: false })}
-                                      className="px-3 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors"
+                                      className="px-3 py-2 bg-slate-200 text-slate-700 rounded-lg font-medium hover:bg-slate-300 transition-colors"
                                       title="Cancelar"
                                     >
                                       <X size={18} />
@@ -423,12 +423,12 @@ const ActivityDetailPage = () => {
                                 </div>
                               </div>
                             ) : (
-                              <div className="flex flex-wrap sm:flex-nowrap items-center gap-4 bg-white px-4 py-3 rounded-lg border border-gray-100 shadow-sm w-full">
+                              <div className="flex flex-wrap sm:flex-nowrap items-center gap-4 bg-white px-4 py-3 rounded-lg border border-slate-100 shadow-sm w-full">
                                 <div className="flex-1 min-w-[150px]">
                                   {asig.retroalimentacion ? (
-                                    <p className="text-sm text-gray-600 italic truncate" title={asig.retroalimentacion}>" {asig.retroalimentacion} "</p>
+                                    <p className="text-sm text-slate-600 italic truncate" title={asig.retroalimentacion}>" {asig.retroalimentacion} "</p>
                                   ) : (
-                                    <p className="text-sm text-gray-400 italic">Sin retroalimentación</p>
+                                    <p className="text-sm text-slate-400 italic">Sin retroalimentación</p>
                                   )}
                                 </div>
                                 <button
@@ -474,12 +474,12 @@ const ActivityDetailPage = () => {
           </div>
 
           {/* Evidence Upload */}
-          <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
-            <h2 className="text-lg font-bold text-gray-900 mb-4">Evidencias</h2>
+          <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100">
+            <h2 className="text-lg font-bold text-slate-900 mb-4">Evidencias</h2>
             
             <div className="flex flex-col gap-3 mb-6">
               {evidences.length === 0 ? (
-                <div className="bg-gray-50 text-gray-400 p-4 rounded-xl text-center text-sm font-medium border border-dashed border-gray-200">
+                <div className="bg-slate-50 text-slate-400 p-4 rounded-xl text-center text-sm font-medium border border-dashed border-slate-200">
                   Aún no se han subido evidencias.
                 </div>
               ) : null}
@@ -489,15 +489,15 @@ const ActivityDetailPage = () => {
                   href={ev.archivo_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-between group bg-white border border-gray-100 hover:border-indigo-300 p-3 rounded-xl shadow-sm transition-all hover:shadow-md"
+                  className="flex items-center justify-between group bg-white border border-slate-100 hover:border-indigo-300 p-3 rounded-xl shadow-sm transition-all hover:shadow-md"
                 >
                   <div className="flex items-center gap-3 overflow-hidden">
                     <div className="bg-emerald-50 text-emerald-500 p-2 rounded-lg shrink-0 group-hover:bg-indigo-50 group-hover:text-indigo-600 transition-colors">
                       <CheckCircle2 size={18} />
                     </div>
-                    <span className="truncate text-sm font-medium text-gray-700">{ev.archivo_url}</span>
+                    <span className="truncate text-sm font-medium text-slate-700">{ev.archivo_url}</span>
                   </div>
-                  <ExternalLink size={14} className="text-gray-400 group-hover:text-indigo-500 shrink-0 ml-2" />
+                  <ExternalLink size={14} className="text-slate-400 group-hover:text-indigo-500 shrink-0 ml-2" />
                 </a>
               ))}
             </div>
@@ -505,7 +505,7 @@ const ActivityDetailPage = () => {
             {/* Controles de Docente */}
             {user?.rol?.nombre === 'Docente' && evidences.length > 0 && activity?.estado?.nombre !== 'Completado' && (
               <div className="mt-6 flex flex-col gap-3">
-                <p className="text-xs font-bold text-gray-500 uppercase text-center mb-1">Validación del Docente</p>
+                <p className="text-xs font-bold text-slate-500 uppercase text-center mb-1">Validación del Docente</p>
                 <div className="flex gap-2">
                   <button 
                     onClick={handleRechazarTarea}
@@ -529,13 +529,13 @@ const ActivityDetailPage = () => {
                 onDragOver={onDragOver}
                 onDragLeave={onDragLeave}
                 onDrop={onDrop}
-                className={`border-2 border-dashed rounded-2xl p-6 text-center transition-all mt-6 ${isDragging ? 'border-indigo-500 bg-indigo-50' : 'border-gray-200 bg-[#F8F9FC] hover:bg-gray-50'}`}
+                className={`border-2 border-dashed rounded-2xl p-6 text-center transition-all mt-6 ${isDragging ? 'border-indigo-500 bg-indigo-50' : 'border-slate-200 bg-[#F8F9FC] hover:bg-slate-50'}`}
               >
-                <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center mx-auto mb-3 shadow-sm text-indigo-500 border border-gray-100">
+                <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center mx-auto mb-3 shadow-sm text-indigo-500 border border-slate-100">
                   <UploadCloud size={24} />
                 </div>
-                <p className="text-sm font-bold text-gray-700 mb-1">Subir enlace de evidencia</p>
-                <p className="text-xs text-gray-500 mb-4">Ingresa el link de Drive, Docs o GitHub</p>
+                <p className="text-sm font-bold text-slate-700 mb-1">Subir enlace de evidencia</p>
+                <p className="text-xs text-slate-500 mb-4">Ingresa el link de Drive, Docs o GitHub</p>
                 
                 <div onClick={e => e.stopPropagation()}>
                   <EvidenceLinkInput onAdd={handleAddEvidence} />
@@ -554,14 +554,14 @@ const ActivityDetailPage = () => {
             <div className="w-12 h-12 rounded-full bg-red-50 text-red-500 flex items-center justify-center mb-4 border border-red-100">
               <AlertCircle size={24} />
             </div>
-            <h3 className="text-xl font-bold text-gray-900 mb-2">Eliminar Actividad</h3>
-            <p className="text-gray-500 text-sm mb-6 leading-relaxed">
+            <h3 className="text-xl font-bold text-slate-900 mb-2">Eliminar Actividad</h3>
+            <p className="text-slate-500 text-sm mb-6 leading-relaxed">
               ¿Estás seguro de que deseas eliminar esta actividad? Esta acción no se puede deshacer y borrará permanentemente todos los datos asociados.
             </p>
             <div className="flex gap-3">
               <button 
                 onClick={() => setIsDeleteDialogOpen(false)}
-                className="flex-1 px-4 py-2.5 rounded-xl border border-gray-200 text-gray-700 font-bold hover:bg-gray-50 transition-colors"
+                className="flex-1 px-4 py-2.5 rounded-xl border border-slate-200 text-slate-700 font-bold hover:bg-slate-50 transition-colors"
               >
                 Cancelar
               </button>

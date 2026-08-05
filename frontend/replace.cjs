@@ -7,14 +7,15 @@ function replaceInDir(dir) {
     const fullPath = path.join(dir, file);
     if (fs.statSync(fullPath).isDirectory()) {
       replaceInDir(fullPath);
-    } else if (fullPath.endsWith('.jsx') || fullPath.endsWith('.js')) {
+    } else if (fullPath.endsWith('.jsx')) {
       let content = fs.readFileSync(fullPath, 'utf8');
-      if (content.includes("'Completada'")) {
-        content = content.replace(/'Completada'/g, "'Completado'");
+      if (content.includes('-gray-')) {
+        content = content.replace(/-gray-/g, '-slate-');
         fs.writeFileSync(fullPath, content);
         console.log('Updated', fullPath);
       }
     }
   }
 }
+
 replaceInDir(path.join(__dirname, 'src'));

@@ -47,7 +47,7 @@ const DashboardPage = () => {
   };
 
   if (loading) {
-    return <div className="p-8 text-center text-gray-500">Cargando progreso académico...</div>;
+    return <div className="p-8 text-center text-slate-500">Cargando progreso académico...</div>;
   }
 
   // Get specific stats by state name
@@ -94,18 +94,18 @@ const DashboardPage = () => {
   // Data for the chart
   const chartData = [
     { name: 'Completadas', value: completed, color: '#10B981' }, // emerald-500
-    { name: 'En Progreso', value: inProgress, color: '#6366F1' }, // indigo-500
+    { name: 'En Progreso', value: inProgress, color: '#4F46E5' }, // indigo-600
     { name: 'Por Hacer', value: todo, color: '#F59E0B' } // amber-500
   ].filter(item => item.value > 0); // Hide empty slices
 
   return (
-    <div className="p-6 md:p-10 min-h-screen flex flex-col bg-[#F9FAFB]">
+    <div className="p-6 md:p-10 min-h-screen flex flex-col bg-slate-50">
       
       {/* Header */}
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Dashboard de Indicadores</h1>
-          <p className="text-sm text-gray-500 mt-1">Vista general del estado de proyectos</p>
+          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Dashboard de Indicadores</h1>
+          <p className="text-sm text-slate-500 mt-1">Vista general del estado de proyectos</p>
         </div>
         <div className="flex items-center gap-4">
           <Link to="/perfil" className="w-10 h-10 rounded-full bg-indigo-600 flex items-center justify-center text-white font-bold text-sm shadow-sm hover:scale-105 transition-transform hover:shadow-md ring-2 ring-transparent hover:ring-indigo-200" title="Ir a mi Perfil">
@@ -115,7 +115,7 @@ const DashboardPage = () => {
       </div>
 
       {/* Welcome Banner & Total Progress */}
-      <div className="bg-[#2D2B52] rounded-3xl p-8 mb-8 text-white relative overflow-hidden shadow-xl shadow-indigo-900/10">
+      <div className="bg-indigo-950 rounded-3xl p-8 mb-8 text-white relative overflow-hidden shadow-xl shadow-indigo-900/10">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end z-10 relative">
           <div>
             <p className="text-indigo-200 text-sm mb-1">Bienvenido de vuelta, 👋</p>
@@ -134,9 +134,9 @@ const DashboardPage = () => {
             <span>Progreso global del proyecto</span>
             <span>{stats?.porcentajeCompletado || 0}% Completado</span>
           </div>
-          <div className="w-full bg-[#413F70] rounded-full h-2">
+          <div className="w-full bg-white/10 rounded-full h-2">
             <div 
-              className="bg-[#5EE192] h-2 rounded-full shadow-[0_0_10px_rgba(94,225,146,0.5)] transition-all duration-1000" 
+              className="bg-indigo-500 h-2 rounded-full shadow-[0_0_10px_rgba(99,102,241,0.5)] transition-all duration-1000" 
               style={{ width: `${stats?.porcentajeCompletado || 0}%` }}
             ></div>
           </div>
@@ -148,36 +148,36 @@ const DashboardPage = () => {
         {/* State Cards (2/3 width on desktop) */}
         <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-3 gap-6">
           {/* Completadas */}
-          <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center transition-all hover:shadow-md">
+          <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 flex flex-col items-center justify-center text-center transition-all hover:shadow-md">
             <div className="w-12 h-12 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-500 mb-4 border border-emerald-100">
               <CheckCircle2 size={24} strokeWidth={1.5} />
             </div>
-            <h3 className="text-3xl font-bold text-gray-900 mb-1">{completed}</h3>
-            <p className="text-xs font-medium text-gray-500">Completadas</p>
+            <h3 className="text-3xl font-bold text-slate-900 mb-1">{completed}</h3>
+            <p className="text-xs font-medium text-slate-500">Completadas</p>
           </div>
 
           {/* En Progreso */}
-          <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center transition-all hover:shadow-md">
-            <div className="w-12 h-12 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-500 mb-4 border border-indigo-100">
+          <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-200 flex flex-col items-center justify-center text-center transition-all hover:shadow-md">
+            <div className="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 mb-4 border border-indigo-200">
               <Clock size={24} strokeWidth={1.5} />
             </div>
-            <h3 className="text-3xl font-bold text-gray-900 mb-1">{inProgress}</h3>
-            <p className="text-xs font-medium text-gray-500">En Progreso</p>
+            <h3 className="text-3xl font-bold text-slate-900 mb-1">{inProgress}</h3>
+            <p className="text-xs font-medium text-slate-500">En Progreso</p>
           </div>
 
           {/* Por Hacer */}
-          <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center transition-all hover:shadow-md">
+          <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-200 flex flex-col items-center justify-center text-center transition-all hover:shadow-md">
             <div className="w-12 h-12 rounded-full bg-amber-50 flex items-center justify-center text-amber-500 mb-4 border border-amber-100">
               <Flag size={24} strokeWidth={1.5} />
             </div>
-            <h3 className="text-3xl font-bold text-gray-900 mb-1">{todo}</h3>
-            <p className="text-xs font-medium text-gray-500">Por Hacer</p>
+            <h3 className="text-3xl font-bold text-slate-900 mb-1">{todo}</h3>
+            <p className="text-xs font-medium text-slate-500">Por Hacer</p>
           </div>
         </div>
 
         {/* Chart Section (1/3 width on desktop) */}
-        <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center justify-center relative">
-          <h3 className="font-bold text-gray-900 mb-4 absolute top-6 left-6">Distribución</h3>
+        <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-200 flex flex-col items-center justify-center relative">
+          <h3 className="font-bold text-slate-900 mb-4 absolute top-6 left-6">Distribución</h3>
           {chartData.length > 0 ? (
             <div className="w-full h-48 mt-8">
               <ResponsiveContainer width="100%" height="100%">
@@ -204,7 +204,7 @@ const DashboardPage = () => {
               </ResponsiveContainer>
             </div>
           ) : (
-            <div className="w-full h-48 mt-8 flex items-center justify-center text-gray-400 text-sm">
+            <div className="w-full h-48 mt-8 flex items-center justify-center text-slate-400 text-sm">
               Sin datos para mostrar
             </div>
           )}
@@ -212,9 +212,9 @@ const DashboardPage = () => {
       </div>
 
       {/* Alerts Section */}
-      <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden mb-8">
-        <div className="p-6 border-b border-gray-100 flex justify-between items-center">
-          <h3 className="font-bold text-gray-900 flex items-center gap-2">
+      <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden mb-8">
+        <div className="p-6 border-b border-slate-100 flex justify-between items-center">
+          <h3 className="font-bold text-slate-900 flex items-center gap-2">
             <AlertCircle size={20} className="text-red-500" />
             Alertas y Próximas Entregas
           </h3>
@@ -225,7 +225,7 @@ const DashboardPage = () => {
         
         <div className="flex flex-col">
           {urgentTasks.length === 0 ? (
-             <div className="p-8 text-center text-gray-500 text-sm">No tienes tareas pendientes urgentes. ¡Buen trabajo!</div>
+             <div className="p-8 text-center text-slate-500 text-sm">No tienes tareas pendientes urgentes. ¡Buen trabajo!</div>
           ) : (
             urgentTasks.map((task) => {
               // RN-14 Calculation
@@ -245,10 +245,10 @@ const DashboardPage = () => {
               const isDueToday = !isCompleted && diffDays === 0;
               const isWarning = !isCompleted && diffDays > 0 && diffDays <= 7;
               
-              let statusColor = "bg-gray-100 text-gray-600";
-              let borderColor = "border-l-gray-300";
-              let iconBg = "bg-gray-50 text-gray-500";
-              let pillBg = "bg-gray-100 text-gray-600";
+              let statusColor = "bg-slate-100 text-slate-600";
+              let borderColor = "border-l-slate-300";
+              let iconBg = "bg-slate-50 text-slate-500";
+              let pillBg = "bg-slate-100 text-slate-600";
               
               if (isOverdue || isDueToday) {
                 statusColor = "text-red-500";
@@ -270,7 +270,7 @@ const DashboardPage = () => {
               return (
                 <div 
                   key={task.id} 
-                  className={`flex items-center justify-between p-5 border-b border-gray-50 hover:bg-gray-50 transition-colors cursor-pointer border-l-4 ${borderColor}`}
+                  className={`flex items-center justify-between p-5 border-b border-slate-50 hover:bg-slate-50 transition-colors cursor-pointer border-l-4 ${borderColor}`}
                   onClick={() => navigate(`/activity/${task.id}`)}
                 >
                   <div className="flex items-center gap-4">
@@ -278,7 +278,7 @@ const DashboardPage = () => {
                       {(isOverdue || isDueToday) ? <AlertCircle size={20} /> : <Clock size={20} />}
                     </div>
                     <div>
-                      <h4 className="text-sm font-bold text-gray-900">{task.titulo}</h4>
+                      <h4 className="text-sm font-bold text-slate-900">{task.titulo}</h4>
                       <div className="flex items-center gap-2 mt-1">
                         <span className="text-[10px] font-semibold bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded-full">
                           {task.estado?.nombre || 'General'}
@@ -295,7 +295,7 @@ const DashboardPage = () => {
                     <span className={`text-xs font-bold px-3 py-1 rounded-full ${pillBg}`}>
                       {isOverdue ? 'Atrasada' : isDueToday ? 'Vence hoy' : `${diffDays}d restantes`}
                     </span>
-                    <span className="text-[11px] text-gray-400 font-medium">
+                    <span className="text-[11px] text-slate-400 font-medium">
                       {dueStart.toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' })}
                     </span>
                   </div>
@@ -308,35 +308,35 @@ const DashboardPage = () => {
 
       {/* Team Progress Section (HU-17) */}
       {(user?.rol?.nombre === 'Docente' || user?.rol?.nombre === 'Administrador' || user?.rol?.nombre === 'Project Manager') && teamProgress.length > 0 && (
-        <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden p-6 mb-8">
-          <div className="border-b border-gray-100 pb-4 mb-6">
-            <h3 className="font-bold text-gray-900 flex items-center gap-2">
+        <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden p-6 mb-8">
+          <div className="border-b border-slate-100 pb-4 mb-6">
+            <h3 className="font-bold text-slate-900 flex items-center gap-2">
               <User size={20} className="text-indigo-500" />
               Avance por Responsable
             </h3>
-            <p className="text-xs text-gray-500 mt-1">Monitoreo de carga de trabajo y progreso individual del equipo</p>
+            <p className="text-xs text-slate-500 mt-1">Monitoreo de carga de trabajo y progreso individual del equipo</p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {teamProgress.map((member, idx) => (
-              <div key={idx} className="bg-[#F8F9FC] rounded-2xl p-5 border border-gray-100 transition-all hover:shadow-md">
+              <div key={idx} className="bg-[#F8F9FC] rounded-2xl p-5 border border-slate-100 transition-all hover:shadow-md">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold">
                     {member.user?.nombre?.[0]?.toUpperCase() || 'U'}
                   </div>
                   <div>
-                    <h4 className="font-bold text-sm text-gray-900 truncate max-w-[150px]" title={member.user?.nombre}>{member.user?.nombre}</h4>
-                    <p className="text-xs text-gray-500 truncate max-w-[150px]">{member.user?.email}</p>
+                    <h4 className="font-bold text-sm text-slate-900 truncate max-w-[150px]" title={member.user?.nombre}>{member.user?.nombre}</h4>
+                    <p className="text-xs text-slate-500 truncate max-w-[150px]">{member.user?.email}</p>
                   </div>
                 </div>
                 
                 <div className="flex items-center justify-between text-xs mb-2">
-                  <span className="font-semibold text-gray-600">Avance</span>
+                  <span className="font-semibold text-slate-600">Avance</span>
                   <span className="font-bold text-emerald-600">
                     {Math.round((member.completadas / member.total) * 100) || 0}%
                   </span>
                 </div>
-                <div className="w-full bg-gray-200 rounded-full h-2 mb-4">
+                <div className="w-full bg-slate-200 rounded-full h-2 mb-4">
                   <div 
                     className="bg-emerald-500 h-2 rounded-full transition-all" 
                     style={{ width: `${Math.round((member.completadas / member.total) * 100) || 0}%` }}
@@ -344,20 +344,20 @@ const DashboardPage = () => {
                 </div>
 
                 <div className="grid grid-cols-2 gap-2 text-xs">
-                  <div className="bg-white p-2 rounded-xl border border-gray-100 flex justify-between items-center">
-                    <span className="text-gray-500">Pendientes</span>
-                    <span className="font-bold text-gray-700">{member.pendientes}</span>
+                  <div className="bg-white p-2 rounded-xl border border-slate-100 flex justify-between items-center">
+                    <span className="text-slate-500">Pendientes</span>
+                    <span className="font-bold text-slate-700">{member.pendientes}</span>
                   </div>
-                  <div className="bg-white p-2 rounded-xl border border-gray-100 flex justify-between items-center">
-                    <span className="text-gray-500">En Proceso</span>
+                  <div className="bg-white p-2 rounded-xl border border-slate-100 flex justify-between items-center">
+                    <span className="text-slate-500">En Proceso</span>
                     <span className="font-bold text-indigo-600">{member.enProceso}</span>
                   </div>
-                  <div className="bg-white p-2 rounded-xl border border-gray-100 flex justify-between items-center">
-                    <span className="text-gray-500">En Revisión</span>
+                  <div className="bg-white p-2 rounded-xl border border-slate-100 flex justify-between items-center">
+                    <span className="text-slate-500">En Revisión</span>
                     <span className="font-bold text-amber-600">{member.enRevision}</span>
                   </div>
-                  <div className="bg-white p-2 rounded-xl border border-gray-100 flex justify-between items-center">
-                    <span className="text-gray-500">Completadas</span>
+                  <div className="bg-white p-2 rounded-xl border border-slate-100 flex justify-between items-center">
+                    <span className="text-slate-500">Completadas</span>
                     <span className="font-bold text-emerald-600">{member.completadas}</span>
                   </div>
                 </div>

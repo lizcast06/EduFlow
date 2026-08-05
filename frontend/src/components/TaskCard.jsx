@@ -17,7 +17,7 @@ const TaskCard = ({ task, onDragStart, onClick }) => {
   let timeText = `${diffDays} días restantes`;
 
   if (isOverdue) {
-    timeBadgeBg = "bg-gray-100 text-gray-500 border-gray-200";
+    timeBadgeBg = "bg-slate-100 text-slate-500 border-slate-200";
     timeIcon = <AlertCircle size={12} className="mr-1" />;
     timeText = "Vencida";
   } else if (diffDays === 0) {
@@ -37,7 +37,7 @@ const TaskCard = ({ task, onDragStart, onClick }) => {
       case 'Alta': return { bg: 'bg-red-50 text-red-600', dot: 'bg-red-500' };
       case 'Media': return { bg: 'bg-amber-50 text-amber-600', dot: 'bg-amber-500' };
       case 'Baja': return { bg: 'bg-emerald-50 text-emerald-600', dot: 'bg-emerald-500' };
-      default: return { bg: 'bg-gray-50 text-gray-600', dot: 'bg-gray-500' };
+      default: return { bg: 'bg-slate-50 text-slate-600', dot: 'bg-slate-500' };
     }
   };
   
@@ -46,11 +46,11 @@ const TaskCard = ({ task, onDragStart, onClick }) => {
   // Tag Style
   const getTagStyle = (estado) => {
     switch (estado) {
-      case 'Pendiente': return 'bg-gray-100 text-gray-600';
-      case 'En Proceso': return 'bg-blue-50 text-blue-600';
-      case 'En Revisión': return 'bg-indigo-50 text-indigo-600';
-      case 'Completado': return 'bg-emerald-50 text-emerald-600';
-      default: return 'bg-teal-50 text-teal-600';
+      case 'Pendiente': return 'bg-indigo-100 text-indigo-700 font-bold tracking-wide uppercase text-[10px]';
+      case 'En Proceso': return 'bg-amber-50 text-amber-600 font-bold tracking-wide uppercase text-[10px]';
+      case 'En Revisión': return 'bg-slate-100 text-slate-600 font-bold tracking-wide uppercase text-[10px]';
+      case 'Completado': return 'bg-emerald-50 text-emerald-600 font-bold tracking-wide uppercase text-[10px]';
+      default: return 'bg-slate-50 text-slate-600 font-bold tracking-wide uppercase text-[10px]';
     }
   };
 
@@ -59,7 +59,7 @@ const TaskCard = ({ task, onDragStart, onClick }) => {
 
   return (
     <div 
-      className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 cursor-pointer hover:shadow-lg hover:shadow-indigo-500/5 hover:-translate-y-1 hover:border-indigo-200 transition-all duration-300 flex flex-col gap-4 group"
+      className="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 cursor-pointer hover:shadow-lg hover:shadow-indigo-500/5 hover:-translate-y-1 hover:border-indigo-200 transition-all duration-300 flex flex-col gap-4 group"
       draggable
       onDragStart={onDragStart}
       onClick={onClick}
@@ -77,11 +77,11 @@ const TaskCard = ({ task, onDragStart, onClick }) => {
       </div>
       
       <div>
-        <h3 className="font-bold text-gray-900 text-lg leading-tight group-hover:text-indigo-600 transition-colors mb-2">
+        <h3 className="font-bold text-slate-900 text-lg leading-tight group-hover:text-indigo-600 transition-colors mb-2">
           {task?.titulo || 'Sin título'}
         </h3>
         {task?.descripcion && (
-          <p className="text-sm text-gray-500 line-clamp-2 leading-relaxed">
+          <p className="text-sm text-slate-500 line-clamp-2 leading-relaxed">
             {task.descripcion}
           </p>
         )}
@@ -96,14 +96,14 @@ const TaskCard = ({ task, onDragStart, onClick }) => {
       
       <div className="flex flex-wrap items-center justify-between gap-y-2 gap-x-2 mt-auto pt-2">
         {task?.fecha_limite && (
-          <div className="flex items-center gap-1.5 text-gray-400 text-xs font-medium">
+          <div className="flex items-center gap-1.5 text-slate-400 text-xs font-medium">
             <Calendar size={14} />
             <span>{new Date(task.fecha_limite).toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
           </div>
         )}
         
         {task?.asignaciones?.length > 0 && (
-           <div className="flex items-center gap-1.5 text-[11px] font-medium text-gray-400">
+           <div className="flex items-center gap-1.5 text-[11px] font-medium text-slate-400">
              <User size={12} />
              <span className="truncate max-w-[80px]">
                {task.asignaciones[0].usuario?.nombre?.split(' ')[0]}

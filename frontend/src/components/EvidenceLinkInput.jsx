@@ -17,7 +17,7 @@ const EvidenceLinkInput = ({ onAdd }) => {
         value={url}
         onChange={(e) => setUrl(e.target.value)}
         placeholder="https://docs.google.com/..." 
-        className="flex-1 min-w-0 bg-white border border-gray-200 rounded-xl px-3 py-2 text-xs text-gray-800 placeholder-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all shadow-sm"
+        className="flex-1 min-w-0 bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all shadow-sm"
       />
       <button 
         onClick={handleAdd}
