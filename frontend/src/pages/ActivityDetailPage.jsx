@@ -223,8 +223,8 @@ const ActivityDetailPage = () => {
             </div>
           ) : (
             <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-3">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+                <div className="flex flex-wrap items-center gap-3">
                   {canChangeStatus ? (
                     <select
                       value={activity.estado?.nombre || 'Pendiente'}
@@ -246,7 +246,7 @@ const ActivityDetailPage = () => {
                   </span>
                 </div>
                 {canEdit && (
-                  <div className="flex gap-2">
+                  <div className="flex flex-wrap gap-2 w-full sm:w-auto">
                     <button 
                       onClick={() => setIsEditingActivity(true)}
                       className="flex items-center gap-2 text-sm font-semibold text-indigo-600 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-lg transition-colors"
@@ -313,27 +313,22 @@ const ActivityDetailPage = () => {
           )}
 
           <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 min-h-[400px]">
-             <div className="flex items-center gap-4 md:gap-6 mb-6 border-b border-slate-100 pb-4 overflow-x-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-                <style>{`
-                  .overflow-x-auto::-webkit-scrollbar {
-                    display: none;
-                  }
-                `}</style>
+             <div className="flex flex-wrap items-center gap-4 md:gap-6 mb-6 border-b border-slate-100 pb-4">
                 <button 
                   onClick={() => setActiveTab('comments')}
-                  className={`flex items-center gap-2 text-base md:text-lg font-bold pb-4 -mb-[17px] border-b-2 transition-colors whitespace-nowrap shrink-0 ${activeTab === 'comments' ? 'border-indigo-600 text-slate-900' : 'border-transparent text-slate-400 hover:text-slate-600'}`}
+                  className={`flex items-center gap-2 text-base md:text-lg font-bold pb-4 -mb-[17px] border-b-2 transition-colors whitespace-nowrap ${activeTab === 'comments' ? 'border-indigo-600 text-slate-900' : 'border-transparent text-slate-400 hover:text-slate-600'}`}
                 >
                   <MessageSquare size={18} className="md:w-5 md:h-5" /> Discusión y Comentarios
                 </button>
                 <button 
                   onClick={() => setActiveTab('history')}
-                  className={`flex items-center gap-2 text-base md:text-lg font-bold pb-4 -mb-[17px] border-b-2 transition-colors whitespace-nowrap shrink-0 ${activeTab === 'history' ? 'border-indigo-600 text-slate-900' : 'border-transparent text-slate-400 hover:text-slate-600'}`}
+                  className={`flex items-center gap-2 text-base md:text-lg font-bold pb-4 -mb-[17px] border-b-2 transition-colors whitespace-nowrap ${activeTab === 'history' ? 'border-indigo-600 text-slate-900' : 'border-transparent text-slate-400 hover:text-slate-600'}`}
                 >
                   <History size={18} className="md:w-5 md:h-5" /> Historial
                 </button>
                 <button 
                   onClick={() => setActiveTab('grades')}
-                  className={`flex items-center gap-2 text-base md:text-lg font-bold pb-4 -mb-[17px] border-b-2 transition-colors whitespace-nowrap shrink-0 ${activeTab === 'grades' ? 'border-indigo-600 text-slate-900' : 'border-transparent text-slate-400 hover:text-slate-600'}`}
+                  className={`flex items-center gap-2 text-base md:text-lg font-bold pb-4 -mb-[17px] border-b-2 transition-colors whitespace-nowrap ${activeTab === 'grades' ? 'border-indigo-600 text-slate-900' : 'border-transparent text-slate-400 hover:text-slate-600'}`}
                 >
                   <CheckCircle2 size={18} className="md:w-5 md:h-5" /> Calificaciones
                 </button>

@@ -29,7 +29,9 @@ async function listarEstudiantes(req, res) {
       attributes: ['id', 'nombre', 'email']
     });
 
-    return successResponse(res, 200, 'Estudiantes consultados correctamente', estudiantes);
+    const uniqueEstudiantes = Array.from(new Map(estudiantes.map(est => [est.id, est])).values());
+
+    return successResponse(res, 200, 'Estudiantes consultados correctamente', uniqueEstudiantes);
   } catch (error) {
     return errorResponse(res, 500, 'Error al consultar estudiantes', error.message);
   }

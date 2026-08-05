@@ -68,19 +68,19 @@ const GruposPage = () => {
   const isDocente = user?.rol?.nombre === 'Docente' || user?.rol?.nombre === 'Administrador';
 
   return (
-    <div className="p-6 md:p-10 min-h-screen flex flex-col bg-[#F9FAFB]">
+    <div className="p-6 md:p-10 min-h-screen flex flex-col bg-slate-50">
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Grupos</h1>
+          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Grupos y Equipos</h1>
           <p className="text-sm text-slate-500 mt-1">
-            {isDocente ? 'Administra tus grupos y códigos de acceso' : 'Tus grupos inscritos'}
+            {isDocente ? 'Administra tus grupos, equipos y códigos de acceso' : 'Tus grupos inscritos'}
           </p>
         </div>
         <button
           onClick={() => { setIsModalOpen(true); setErrorMessage(''); }}
           className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl font-medium transition-colors shadow-md shadow-indigo-600/20 flex items-center gap-2"
         >
-          {isDocente ? <><Plus size={18} /><span>Crear Grupo</span></> : <><Key size={18} /><span>Unirse a Grupo</span></>}
+          {isDocente ? <><Plus size={18} /><span>Crear Grupo / Equipo</span></> : <><Key size={18} /><span>Unirse a Grupo</span></>}
         </button>
       </div>
 
@@ -133,7 +133,7 @@ const GruposPage = () => {
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in-95 duration-200">
             <div className="p-6">
               <h2 className="text-xl font-bold text-slate-900 mb-4">
-                {isDocente ? 'Crear Nuevo Grupo' : 'Unirse a un Grupo'}
+                {isDocente ? 'Crear Grupo o Proyecto' : 'Unirse a un Grupo'}
               </h2>
               
               {errorMessage && (
@@ -145,13 +145,13 @@ const GruposPage = () => {
               <form onSubmit={isDocente ? handleCreateGroup : handleJoinGroup}>
                 {isDocente ? (
                   <div className="mb-4">
-                    <label className="block text-sm font-semibold text-slate-700 mb-2">Nombre del Grupo</label>
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">Nombre del Grupo, Proyecto o Equipo</label>
                     <input
                       type="text"
                       required
                       value={nombreGrupo}
                       onChange={(e) => setNombreGrupo(e.target.value)}
-                      placeholder="Ej. 9no Cuatrimestre A"
+                      placeholder="Ej. 9no Cuatrimestre A o Proyecto Final"
                       className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
                     />
                   </div>

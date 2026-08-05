@@ -15,7 +15,8 @@ const TaskForm = ({ onSubmit, onCancel, initialData = {}, isEditing = false }) =
     const fetchEstudiantes = async () => {
       try {
         const data = await usuarioService.getEstudiantes();
-        setEstudiantes(data);
+        const uniqueEstudiantes = Array.from(new Map(data.map(est => [est.id, est])).values());
+        setEstudiantes(uniqueEstudiantes);
       } catch (error) {
         console.error('Error al cargar estudiantes', error);
       }
