@@ -9,14 +9,14 @@ async function obtenerAvance(req, res) {
     const baseWhere = {};
     const baseInclude = [];
 
-    if (usuario && usuario.rol === 'Estudiante') {
+    if (usuario && (usuario.rol === 'Estudiante' || usuario.rol_id === 2)) {
       baseInclude.push({
         association: 'responsables',
         where: { id: usuario.id },
         required: true,
         attributes: []
       });
-    } else if (usuario && usuario.rol === 'Docente') {
+    } else if (usuario && (usuario.rol === 'Docente' || usuario.rol_id === 1)) {
       baseWhere.creador_id = usuario.id;
     }
 
@@ -25,12 +25,8 @@ async function obtenerAvance(req, res) {
       include: baseInclude
     });
 
-    const actividadesPorEstado = await Actividad.findAll({
+    const todasLasActividades = await Actividad.findAll({
       where: baseWhere,
-      attributes: [
-        'estado_id',
-        [Sequelize.fn('COUNT', Sequelize.col('Actividad.id')), 'total']
-      ],
       include: [
         ...baseInclude,
         {
@@ -38,20 +34,37 @@ async function obtenerAvance(req, res) {
           as: 'estado',
           attributes: ['id', 'nombre']
         }
-      ],
-      group: ['estado_id', 'estado.id', 'estado.nombre'],
-      raw: false
+      ]
     });
 
-    const actividadesPorPrioridad = await Actividad.findAll({
-      where: baseWhere,
-      include: baseInclude,
-      attributes: [
-        'prioridad',
-        [Sequelize.fn('COUNT', Sequelize.col('Actividad.id')), 'total']
-      ],
-      group: ['prioridad']
+    const estadoCount = {};
+    const prioridadCount = {};
+
+    todasLasActividades.forEach(act => {
+      if (act.estado) {
+        if (!estadoCount[act.estado_id]) {
+          estadoCount[act.estado_id] = {
+            estado_id: act.estado_id,
+            total: 0,
+            estado: { id: act.estado.id, nombre: act.estado.nombre }
+          };
+        }
+        estadoCount[act.estado_id].total += 1;
+      }
+
+      if (act.prioridad) {
+        if (!prioridadCount[act.prioridad]) {
+          prioridadCount[act.prioridad] = {
+            prioridad: act.prioridad,
+            total: 0
+          };
+        }
+        prioridadCount[act.prioridad].total += 1;
+      }
     });
+
+    const actividadesPorEstado = Object.values(estadoCount);
+    const actividadesPorPrioridad = Object.values(prioridadCount);
 
     const estadoCompletado = await Estado.obtenerPorNombre('Completado');
 
