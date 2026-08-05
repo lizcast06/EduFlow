@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { indicatorService } from '../services/indicatorService';
 import { activityService } from '../services/activityService';
 import { useAuth } from '../hooks/useAuth';
-import { CheckCircle2, Clock, Flag, AlertCircle, ChevronRight, Bell, User } from 'lucide-react';
+import { CheckCircle2, Clock, Flag, AlertCircle, ChevronRight, User } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 
 const DashboardPage = () => {
@@ -58,8 +58,8 @@ const DashboardPage = () => {
   };
 
   const completed = getStatByState('Completado');
-  const inProgress = getStatByState('Desarrollo') + getStatByState('Testing');
-  const todo = getStatByState('Backlog') + getStatByState('Análisis') + getStatByState('Diseño');
+  const inProgress = getStatByState('En Proceso') + getStatByState('En Revisión');
+  const todo = getStatByState('Pendiente');
 
   // Calcular avance por responsable (HU-17)
   const userStatsMap = {};
@@ -83,8 +83,9 @@ const DashboardPage = () => {
         
         const status = act.estado?.nombre;
         if (status === 'Completado') userStatsMap[userId].completadas += 1;
-        else if (status === 'Backlog' || status === 'Análisis' || status === 'Diseño') userStatsMap[userId].pendientes += 1;
-        else if (status === 'Desarrollo' || status === 'Testing') userStatsMap[userId].enProceso += 1;
+        else if (status === 'Pendiente') userStatsMap[userId].pendientes += 1;
+        else if (status === 'En Proceso') userStatsMap[userId].enProceso += 1;
+        else if (status === 'En Revisión') userStatsMap[userId].enRevision += 1;
       });
     }
   });
@@ -107,13 +108,9 @@ const DashboardPage = () => {
           <p className="text-sm text-gray-500 mt-1">Vista general del estado de proyectos</p>
         </div>
         <div className="flex items-center gap-4">
-          <button className="relative p-2 bg-white rounded-full shadow-sm border border-gray-100 text-gray-400 hover:text-gray-600">
-            <Bell size={20} />
-            <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white"></span>
-          </button>
-          <div className="w-10 h-10 rounded-full bg-indigo-600 flex items-center justify-center text-white font-bold text-sm shadow-sm">
+          <Link to="/perfil" className="w-10 h-10 rounded-full bg-indigo-600 flex items-center justify-center text-white font-bold text-sm shadow-sm hover:scale-105 transition-transform hover:shadow-md ring-2 ring-transparent hover:ring-indigo-200" title="Ir a mi Perfil">
             {user?.nombre?.[0]?.toUpperCase() || 'U'}
-          </div>
+          </Link>
         </div>
       </div>
 

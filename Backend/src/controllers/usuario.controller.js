@@ -11,8 +11,21 @@ async function listarEstudiantes(req, res) {
       return errorResponse(res, 404, 'Rol de estudiante no encontrado');
     }
 
+    let includeQuery = [];
+    if (req.usuario && (req.usuario.rol === 'Docente' || req.usuario.rol_id === 1)) {
+      includeQuery = [
+        {
+          association: 'grupos',
+          where: { docente_id: req.usuario.id },
+          required: true,
+          attributes: []
+        }
+      ];
+    }
+
     const estudiantes = await Usuario.findAll({
       where: { rol_id: rolEstudiante.id, activo: true },
+      include: includeQuery,
       attributes: ['id', 'nombre', 'email']
     });
 

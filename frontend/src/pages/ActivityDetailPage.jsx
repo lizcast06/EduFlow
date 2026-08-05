@@ -20,7 +20,11 @@ const ActivityDetailPage = () => {
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isDragging, setIsDragging] = useState(false);
-  const [activeTab, setActiveTab] = useState('comments'); // 'comments' or 'history'
+  const [activeTab, setActiveTab] = useState('comments'); // 'comments' or 'history' or 'grades'
+  const [calificaciones, setCalificaciones] = useState({});
+  const [retroalimentaciones, setRetroalimentaciones] = useState({});
+  const [editingGrades, setEditingGrades] = useState({});
+  const [submittingGrade, setSubmittingGrade] = useState(false);
   const [isEditingActivity, setIsEditingActivity] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -72,6 +76,29 @@ const ActivityDetailPage = () => {
       setComments(comData);
     } catch (error) {
       console.error('Error adding comment:', error);
+    }
+  };
+
+  const handleCalificar = async (estudianteId, asig) => {
+    try {
+      setSubmittingGrade(true);
+      const data = {
+        calificacion: calificaciones[estudianteId] !== undefined ? calificaciones[estudianteId] : asig.calificacion,
+        retroalimentacion: retroalimentaciones[estudianteId] !== undefined ? retroalimentaciones[estudianteId] : asig.retroalimentacion
+      };
+      
+      if (data.calificacion !== null && data.calificacion !== '') {
+        data.calificacion = Number(data.calificacion);
+      }
+
+      await activityService.calificar(id, estudianteId, data);
+      showError('Calificación guardada correctamente'); // we use showError to show temporary success message too
+      setEditingGrades({ ...editingGrades, [estudianteId]: false });
+      loadData();
+    } catch (error) {
+      showError(error.response?.data?.message || 'Error al calificar');
+    } finally {
+      setSubmittingGrade(false);
     }
   };
 
@@ -207,7 +234,7 @@ const ActivityDetailPage = () => {
                       <option value="Pendiente">Pendiente</option>
                       <option value="En Proceso">En Proceso</option>
                       <option value="En Revisión">En Revisión</option>
-                      <option value="Completada">Completada</option>
+                      {canEdit && <option value="Completado">Completado</option>}
                     </select>
                   ) : (
                     <span className="text-xs font-bold tracking-wider uppercase bg-indigo-50 text-indigo-600 px-3 py-1 rounded-lg border border-indigo-100">
@@ -278,7 +305,7 @@ const ActivityDetailPage = () => {
                   </div>
                   <div>
                     <p className="text-xs text-gray-400 font-semibold uppercase">Fecha de inicio</p>
-                    <p className="font-bold text-gray-800">{new Date(activity.createdAt).toLocaleDateString('es-ES')}</p>
+                    <p className="font-bold text-gray-800">{activity.fecha_creacion ? new Date(activity.fecha_creacion).toLocaleDateString('es-ES') : 'Sin fecha'}</p>
                   </div>
                 </div>
               </div>
@@ -286,24 +313,35 @@ const ActivityDetailPage = () => {
           )}
 
           <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 min-h-[400px]">
-             <div className="flex items-center gap-6 mb-6 border-b border-gray-100 pb-4">
+             <div className="flex items-center gap-4 md:gap-6 mb-6 border-b border-gray-100 pb-4 overflow-x-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+                <style>{`
+                  .overflow-x-auto::-webkit-scrollbar {
+                    display: none;
+                  }
+                `}</style>
                 <button 
                   onClick={() => setActiveTab('comments')}
-                  className={`flex items-center gap-2 text-lg font-bold pb-4 -mb-[17px] border-b-2 transition-colors ${activeTab === 'comments' ? 'border-indigo-600 text-gray-900' : 'border-transparent text-gray-400 hover:text-gray-600'}`}
+                  className={`flex items-center gap-2 text-base md:text-lg font-bold pb-4 -mb-[17px] border-b-2 transition-colors whitespace-nowrap shrink-0 ${activeTab === 'comments' ? 'border-indigo-600 text-gray-900' : 'border-transparent text-gray-400 hover:text-gray-600'}`}
                 >
-                  <MessageSquare size={20} /> Discusión y Comentarios
+                  <MessageSquare size={18} className="md:w-5 md:h-5" /> Discusión y Comentarios
                 </button>
                 <button 
                   onClick={() => setActiveTab('history')}
-                  className={`flex items-center gap-2 text-lg font-bold pb-4 -mb-[17px] border-b-2 transition-colors ${activeTab === 'history' ? 'border-indigo-600 text-gray-900' : 'border-transparent text-gray-400 hover:text-gray-600'}`}
+                  className={`flex items-center gap-2 text-base md:text-lg font-bold pb-4 -mb-[17px] border-b-2 transition-colors whitespace-nowrap shrink-0 ${activeTab === 'history' ? 'border-indigo-600 text-gray-900' : 'border-transparent text-gray-400 hover:text-gray-600'}`}
                 >
-                  <History size={20} /> Historial
+                  <History size={18} className="md:w-5 md:h-5" /> Historial
+                </button>
+                <button 
+                  onClick={() => setActiveTab('grades')}
+                  className={`flex items-center gap-2 text-base md:text-lg font-bold pb-4 -mb-[17px] border-b-2 transition-colors whitespace-nowrap shrink-0 ${activeTab === 'grades' ? 'border-indigo-600 text-gray-900' : 'border-transparent text-gray-400 hover:text-gray-600'}`}
+                >
+                  <CheckCircle2 size={18} className="md:w-5 md:h-5" /> Calificaciones
                 </button>
              </div>
 
              {activeTab === 'comments' ? (
                 <CommentList comments={comments} onAddComment={handleAddComment} />
-             ) : (
+             ) : activeTab === 'history' ? (
                 <div className="flex flex-col gap-4">
                   {history.length === 0 ? (
                     <p className="text-gray-500 italic text-center py-8">No hay historial registrado.</p>
@@ -321,6 +359,88 @@ const ActivityDetailPage = () => {
                           <p className="text-sm text-gray-600 mb-1">{evento.detalles}</p>
                           <p className="text-xs text-indigo-500 font-medium">Por: {evento.usuario ? evento.usuario.nombre : 'Sistema'}</p>
                         </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+             ) : (
+                <div className="flex flex-col gap-6">
+                  {!activity.asignaciones || activity.asignaciones.length === 0 ? (
+                    <p className="text-gray-500 italic text-center py-8">No hay alumnos asignados a esta actividad.</p>
+                  ) : (
+                    activity.asignaciones
+                      .filter(asig => canEdit || asig.usuario_id === user.id)
+                      .map((asig) => (
+                      <div key={asig.usuario_id} className="p-4 rounded-xl border border-gray-100 bg-gray-50 flex flex-wrap gap-4 items-center justify-between">
+                        <div className="flex-1 min-w-[200px]">
+                          <p className="font-bold text-gray-800 truncate" title={asig.usuario?.nombre}>{asig.usuario?.nombre}</p>
+                          {asig.calificacion !== null && (
+                            <p className="text-sm font-semibold text-emerald-600 mt-0.5">
+                              Calificación: {asig.calificacion}/10
+                            </p>
+                          )}
+                          {asig.retroalimentacion && !canEdit && (
+                            <p className="text-sm mt-2 text-gray-700 italic border-l-2 border-indigo-300 pl-3 line-clamp-3">" {asig.retroalimentacion} "</p>
+                          )}
+                        </div>
+                        {canEdit && (
+                          <div className="flex-none max-w-full w-full md:w-auto">
+                            {(asig.calificacion === null || editingGrades[asig.usuario_id]) ? (
+                              <div className="flex flex-wrap sm:flex-nowrap items-center gap-3 w-full">
+                                <input
+                                  type="number"
+                                  min="0"
+                                  max="10"
+                                  placeholder="Nota (0-10)"
+                                  className="w-full sm:w-24 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none shrink-0"
+                                  value={calificaciones[asig.usuario_id] !== undefined ? calificaciones[asig.usuario_id] : (asig.calificacion || '')}
+                                  onChange={(e) => setCalificaciones({...calificaciones, [asig.usuario_id]: e.target.value})}
+                                />
+                                <input
+                                  type="text"
+                                  placeholder="Feedback opcional"
+                                  className="w-full sm:w-64 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                                  value={retroalimentaciones[asig.usuario_id] !== undefined ? retroalimentaciones[asig.usuario_id] : (asig.retroalimentacion || '')}
+                                  onChange={(e) => setRetroalimentaciones({...retroalimentaciones, [asig.usuario_id]: e.target.value})}
+                                />
+                                <div className="flex gap-2 shrink-0 w-full sm:w-auto justify-end">
+                                  {asig.calificacion !== null && (
+                                    <button
+                                      onClick={() => setEditingGrades({ ...editingGrades, [asig.usuario_id]: false })}
+                                      className="px-3 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors"
+                                      title="Cancelar"
+                                    >
+                                      <X size={18} />
+                                    </button>
+                                  )}
+                                  <button
+                                    onClick={() => handleCalificar(asig.usuario_id, asig)}
+                                    disabled={submittingGrade}
+                                    className="px-4 py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 disabled:opacity-50 transition-colors flex items-center gap-2 justify-center flex-1 sm:flex-none"
+                                  >
+                                    <Check size={18} /> Guardar
+                                  </button>
+                                </div>
+                              </div>
+                            ) : (
+                              <div className="flex flex-wrap sm:flex-nowrap items-center gap-4 bg-white px-4 py-3 rounded-lg border border-gray-100 shadow-sm w-full">
+                                <div className="flex-1 min-w-[150px]">
+                                  {asig.retroalimentacion ? (
+                                    <p className="text-sm text-gray-600 italic truncate" title={asig.retroalimentacion}>" {asig.retroalimentacion} "</p>
+                                  ) : (
+                                    <p className="text-sm text-gray-400 italic">Sin retroalimentación</p>
+                                  )}
+                                </div>
+                                <button
+                                  onClick={() => setEditingGrades({ ...editingGrades, [asig.usuario_id]: true })}
+                                  className="flex items-center justify-center w-full sm:w-auto gap-1.5 px-4 py-1.5 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-md hover:bg-indigo-100 transition-colors shrink-0"
+                                >
+                                  <Edit3 size={14} /> Editar
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                        )}
                       </div>
                     ))
                   )}

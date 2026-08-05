@@ -10,5 +10,6 @@ router.post('/', authMiddleware, actividadController.crearActividad);
 router.put('/:id', authMiddleware, actividadController.actualizarActividad);
 router.delete('/:id', authMiddleware, actividadController.eliminarActividad);
 router.put('/:id/estado', authMiddleware, actividadController.cambiarEstado);
+router.put('/:id/calificar/:estudiante_id', authMiddleware, actividadController.calificarActividad);
 
 module.exports = router;

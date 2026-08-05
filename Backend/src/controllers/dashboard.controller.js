@@ -5,14 +5,34 @@ const { successResponse, errorResponse } = require('../utils/response');
 
 async function obtenerAvance(req, res) {
   try {
-    const totalActividades = await Actividad.count();
+    const usuario = req.usuario;
+    const baseWhere = {};
+    const baseInclude = [];
+
+    if (usuario && usuario.rol === 'Estudiante') {
+      baseInclude.push({
+        association: 'responsables',
+        where: { id: usuario.id },
+        required: true,
+        attributes: []
+      });
+    } else if (usuario && usuario.rol === 'Docente') {
+      baseWhere.creador_id = usuario.id;
+    }
+
+    const totalActividades = await Actividad.count({
+      where: baseWhere,
+      include: baseInclude
+    });
 
     const actividadesPorEstado = await Actividad.findAll({
+      where: baseWhere,
       attributes: [
         'estado_id',
         [Sequelize.fn('COUNT', Sequelize.col('Actividad.id')), 'total']
       ],
       include: [
+        ...baseInclude,
         {
           model: Estado,
           as: 'estado',
@@ -24,14 +44,16 @@ async function obtenerAvance(req, res) {
     });
 
     const actividadesPorPrioridad = await Actividad.findAll({
+      where: baseWhere,
+      include: baseInclude,
       attributes: [
         'prioridad',
-        [Sequelize.fn('COUNT', Sequelize.col('id')), 'total']
+        [Sequelize.fn('COUNT', Sequelize.col('Actividad.id')), 'total']
       ],
       group: ['prioridad']
     });
 
-    const estadoCompletado = await Estado.obtenerPorNombre('Completada');
+    const estadoCompletado = await Estado.obtenerPorNombre('Completado');
 
     let actividadesCompletadas = 0;
     let tareasVencidas = [];
@@ -45,26 +67,32 @@ async function obtenerAvance(req, res) {
     if (estadoCompletado) {
       actividadesCompletadas = await Actividad.count({
         where: {
+          ...baseWhere,
           estado_id: estadoCompletado.id
-        }
+        },
+        include: baseInclude
       });
 
       tareasVencidas = await Actividad.findAll({
         where: {
+          ...baseWhere,
           estado_id: { [Op.ne]: estadoCompletado.id },
           fecha_limite: { [Op.lt]: hoy }
         },
+        include: baseInclude,
         order: [['fecha_limite', 'ASC']]
       });
 
       tareasProximas = await Actividad.findAll({
         where: {
+          ...baseWhere,
           estado_id: { [Op.ne]: estadoCompletado.id },
           fecha_limite: {
             [Op.gte]: hoy,
             [Op.lte]: dosDiasMas
           }
         },
+        include: baseInclude,
         order: [['fecha_limite', 'ASC']]
       });
     }

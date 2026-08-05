@@ -8,6 +8,7 @@ const Evidencia = require('./Evidencia');
 const Comentario = require('./Comentario');
 const Asignacion = require('./Asignacion');
 const Historial = require('./Historial');
+const Grupo = require('./Grupo');
 
 Rol.hasMany(Usuario, {
   foreignKey: 'rol_id',
@@ -133,6 +134,42 @@ Historial.belongsTo(Usuario, {
   as: 'usuario'
 });
 
+Grupo.belongsTo(Usuario, {
+  foreignKey: 'docente_id',
+  as: 'docente'
+});
+
+Usuario.hasMany(Grupo, {
+  foreignKey: 'docente_id',
+  as: 'gruposCreados'
+});
+
+Grupo.belongsToMany(Usuario, {
+  through: 'grupo_estudiante',
+  foreignKey: 'grupo_id',
+  otherKey: 'estudiante_id',
+  as: 'estudiantes',
+  timestamps: false
+});
+
+Usuario.belongsToMany(Grupo, {
+  through: 'grupo_estudiante',
+  foreignKey: 'estudiante_id',
+  otherKey: 'grupo_id',
+  as: 'grupos',
+  timestamps: false
+});
+
+Grupo.hasMany(Actividad, {
+  foreignKey: 'grupo_id',
+  as: 'actividades'
+});
+
+Actividad.belongsTo(Grupo, {
+  foreignKey: 'grupo_id',
+  as: 'grupo'
+});
+
 module.exports = {
   sequelize,
   Rol,
@@ -142,5 +179,6 @@ module.exports = {
   Evidencia,
   Comentario,
   Asignacion,
-  Historial
+  Historial,
+  Grupo
 };

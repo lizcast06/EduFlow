@@ -60,18 +60,17 @@ class Actividad extends Model {
     }
 
     // RN-04
-    if (usuario && usuario.rol === 'Estudiante') {
-
+    if (usuario && (usuario.rol === 'Estudiante' || usuario.rol_id === 2)) {
       const responsablesInclude = include.find(
         i => i.association === 'responsables'
       );
-
       responsablesInclude.where = {
         ...(responsablesInclude.where || {}),
         id: usuario.id
       };
-
       responsablesInclude.required = true;
+    } else if (usuario && (usuario.rol === 'Docente' || usuario.rol_id === 1)) {
+      where.creador_id = usuario.id;
     }
 
     return await Actividad.findAll({
@@ -186,12 +185,22 @@ Actividad.init(
           msg: 'El creador debe ser un número entero'
         }
       }
+    },
+    grupo_id: {
+      type: DataTypes.INTEGER,
+      allowNull: true
+    },
+    fecha_creacion: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: DataTypes.NOW
     }
   },
   {
     sequelize,
     modelName: 'Actividad',
-    tableName: 'actividad'
+    tableName: 'actividad',
+    timestamps: false
   }
 );
 

@@ -27,5 +27,9 @@ export const activityService = {
   getHistorial: async (id) => {
     const response = await api.get(`/actividades/${id}/historial`);
     return response.data.data || [];
+  },
+  calificar: async (actividadId, estudianteId, data) => {
+    const response = await api.put(`/actividades/${actividadId}/calificar/${estudianteId}`, data);
+    return response.data.data;
   }
 };

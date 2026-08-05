@@ -7,6 +7,7 @@ import {
   Menu, 
   X, 
   User,
+  Users,
   GraduationCap
 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
@@ -25,6 +26,8 @@ const MainLayout = ({ children }) => {
   const navItems = [
     { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { path: '/board', label: 'Actividades', icon: Kanban },
+    { path: '/grupos', label: 'Grupos', icon: Users },
+    { path: '/perfil', label: 'Mi Perfil', icon: User },
   ];
 
   if (user?.rol?.nombre === 'Administrador' || user?.rol?.nombre === 'Admin') {

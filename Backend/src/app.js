@@ -9,6 +9,7 @@ const comentarioRoutes = require('./routes/comentario.routes');
 const dashboardRoutes = require('./routes/dashboard.routes');
 const usuarioRoutes = require('./routes/usuario.routes');
 const historialRoutes = require('./routes/historial.routes');
+const grupoRoutes = require('./routes/grupo.routes');
 
 const {
   notFoundHandler,
@@ -36,6 +37,7 @@ app.use('/api', comentarioRoutes);
 app.use('/api', historialRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/usuarios', usuarioRoutes);
+app.use('/api/grupos', grupoRoutes);
 
 app.use(notFoundHandler);
 app.use(errorHandler);

@@ -1,4 +1,4 @@
-import { Calendar, User, Clock, AlertCircle } from 'lucide-react';
+import { Calendar, User, Clock, AlertCircle, Star } from 'lucide-react';
 
 const TaskCard = ({ task, onDragStart, onClick }) => {
   // Calculate time remaining
@@ -32,60 +32,83 @@ const TaskCard = ({ task, onDragStart, onClick }) => {
   }
 
   // Priority Badge colors
-  const getPriorityColor = (priority) => {
+  const getPriorityStyle = (priority) => {
     switch (priority) {
-      case 'Alta': return 'bg-red-500 text-white shadow-red-500/30';
-      case 'Media': return 'bg-amber-500 text-white shadow-amber-500/30';
-      case 'Baja': return 'bg-emerald-500 text-white shadow-emerald-500/30';
-      default: return 'bg-gray-500 text-white shadow-gray-500/30';
+      case 'Alta': return { bg: 'bg-red-50 text-red-600', dot: 'bg-red-500' };
+      case 'Media': return { bg: 'bg-amber-50 text-amber-600', dot: 'bg-amber-500' };
+      case 'Baja': return { bg: 'bg-emerald-50 text-emerald-600', dot: 'bg-emerald-500' };
+      default: return { bg: 'bg-gray-50 text-gray-600', dot: 'bg-gray-500' };
+    }
+  };
+  
+  const pStyle = getPriorityStyle(task?.prioridad);
+  
+  // Tag Style
+  const getTagStyle = (estado) => {
+    switch (estado) {
+      case 'Pendiente': return 'bg-gray-100 text-gray-600';
+      case 'En Proceso': return 'bg-blue-50 text-blue-600';
+      case 'En Revisión': return 'bg-indigo-50 text-indigo-600';
+      case 'Completado': return 'bg-emerald-50 text-emerald-600';
+      default: return 'bg-teal-50 text-teal-600';
     }
   };
 
+  // Extract highest grade if multiple assignees, or just the first one
+  const calificacion = task?.asignaciones?.find(a => a.calificacion !== null)?.calificacion;
+
   return (
     <div 
-      className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 cursor-pointer hover:shadow-lg hover:shadow-indigo-500/5 hover:-translate-y-1 hover:border-indigo-200 transition-all duration-300 flex flex-col gap-3 group"
+      className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 cursor-pointer hover:shadow-lg hover:shadow-indigo-500/5 hover:-translate-y-1 hover:border-indigo-200 transition-all duration-300 flex flex-col gap-4 group"
       draggable
       onDragStart={onDragStart}
       onClick={onClick}
     >
       <div className="flex justify-between items-start gap-2">
-        <span className="text-[10px] font-bold tracking-wider uppercase bg-indigo-50 text-indigo-600 px-2 py-1 rounded-md border border-indigo-100">
+        <span className={`text-[11px] font-medium px-3 py-1 rounded-full ${getTagStyle(task?.estado?.nombre)}`}>
           {task?.estado?.nombre || 'General'}
         </span>
         {task?.prioridad && (
-          <span className={`text-[10px] font-bold tracking-wider uppercase px-2 py-1 rounded-md shadow-sm ${getPriorityColor(task.prioridad)}`}>
+          <span className={`text-[11px] font-bold flex items-center gap-1.5 px-2.5 py-1 rounded-full ${pStyle.bg}`}>
+            <span className={`w-1.5 h-1.5 rounded-full ${pStyle.dot}`}></span>
             {task.prioridad}
           </span>
         )}
       </div>
       
       <div>
-        <h3 className="font-bold text-gray-900 leading-tight group-hover:text-indigo-600 transition-colors mb-1">
+        <h3 className="font-bold text-gray-900 text-lg leading-tight group-hover:text-indigo-600 transition-colors mb-2">
           {task?.titulo || 'Sin título'}
         </h3>
         {task?.descripcion && (
-          <p className="text-xs text-gray-500 line-clamp-2 leading-relaxed">
+          <p className="text-sm text-gray-500 line-clamp-2 leading-relaxed">
             {task.descripcion}
           </p>
         )}
       </div>
       
-      <div className="flex flex-wrap items-center justify-between gap-y-2 gap-x-2 mt-1 pt-3 border-t border-gray-50">
-        <div className="flex items-center gap-1.5 bg-gray-50 px-2 py-1.5 rounded-lg border border-gray-100 text-[11px] font-medium text-gray-600">
-          <User size={12} className="text-indigo-400" />
-          <span className="truncate max-w-[80px]">
-            {task?.asignaciones?.length > 0 
-              ? `${task.asignaciones[0].usuario?.nombre?.split(' ')[0]} ${task.asignaciones.length > 1 ? `+${task.asignaciones.length - 1}` : ''}`
-              : task?.creador?.nombre?.split(' ')[0] || 'Docente'
-            }
-          </span>
+      {calificacion !== undefined && calificacion !== null && (
+        <div className="flex items-center gap-1.5 bg-emerald-50 text-emerald-700 px-3 py-1.5 rounded-xl text-sm font-semibold border border-emerald-100 w-fit">
+          <Star size={16} className="text-emerald-500" />
+          <span>Calificación: {calificacion}/10</span>
         </div>
-        
+      )}
+      
+      <div className="flex flex-wrap items-center justify-between gap-y-2 gap-x-2 mt-auto pt-2">
         {task?.fecha_limite && (
-          <div className={`flex items-center px-2.5 py-1.5 rounded-lg border text-[11px] font-bold ${timeBadgeBg}`}>
-            {timeIcon}
-            <span>{timeText}</span>
+          <div className="flex items-center gap-1.5 text-gray-400 text-xs font-medium">
+            <Calendar size={14} />
+            <span>{new Date(task.fecha_limite).toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
           </div>
+        )}
+        
+        {task?.asignaciones?.length > 0 && (
+           <div className="flex items-center gap-1.5 text-[11px] font-medium text-gray-400">
+             <User size={12} />
+             <span className="truncate max-w-[80px]">
+               {task.asignaciones[0].usuario?.nombre?.split(' ')[0]}
+             </span>
+           </div>
         )}
       </div>
     </div>

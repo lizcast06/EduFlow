@@ -77,7 +77,7 @@ async function crearActividad(req, res) {
     let estadoIdFinal = estado_id;
 
     if (!estadoIdFinal) {
-      estadoInicial = await Estado.obtenerPorNombre('Backlog');
+      estadoInicial = await Estado.obtenerPorNombre('Pendiente');
       estadoIdFinal = estadoInicial ? estadoInicial.id : null;
     } else {
       estadoInicial = await Estado.obtenerPorId(estadoIdFinal);
@@ -264,6 +264,10 @@ async function cambiarEstado(req, res) {
     }
 
     if (estadoEncontrado.nombre === 'Completado') {
+      if (req.usuario.rol !== 'Docente' && req.usuario.rol !== 'Administrador') {
+        return errorResponse(res, 403, 'Solo un Docente puede aprobar y mover la actividad a Completado.');
+      }
+
       const evidencias = await Evidencia.findAll({ where: { actividad_id: id } });
       if (evidencias.length === 0) {
         return errorResponse(res, 400, 'No se puede mover a Completado sin adjuntar una evidencia');
@@ -285,11 +289,47 @@ async function cambiarEstado(req, res) {
   }
 }
 
+async function calificarActividad(req, res) {
+  try {
+    const { id, estudiante_id } = req.params;
+    const { calificacion, retroalimentacion } = req.body;
+
+    if (req.usuario.rol !== 'Docente' && req.usuario.rol !== 'Administrador') {
+      return errorResponse(res, 403, 'No tienes permisos para calificar actividades');
+    }
+
+    const asignacion = await Asignacion.findOne({
+      where: { actividad_id: id, usuario_id: estudiante_id }
+    });
+
+    if (!asignacion) {
+      return errorResponse(res, 404, 'No se encontró la asignación de este estudiante para esta actividad');
+    }
+
+    asignacion.calificacion = calificacion !== undefined ? calificacion : asignacion.calificacion;
+    asignacion.retroalimentacion = retroalimentacion !== undefined ? retroalimentacion : asignacion.retroalimentacion;
+    
+    await asignacion.save();
+
+    await Historial.create({
+      actividad_id: id,
+      usuario_id: req.usuario.id,
+      accion: 'Actividad calificada',
+      detalles: `Se calificó la actividad al estudiante ${estudiante_id} con nota ${calificacion}`
+    });
+
+    return successResponse(res, 200, 'Calificación guardada correctamente', asignacion);
+  } catch (error) {
+    return errorResponse(res, 500, 'Error al calificar actividad', error.message);
+  }
+}
+
 module.exports = {
   listarActividades,
   obtenerActividad,
   crearActividad,
   actualizarActividad,
   eliminarActividad,
-  cambiarEstado
+  cambiarEstado,
+  calificarActividad
 };

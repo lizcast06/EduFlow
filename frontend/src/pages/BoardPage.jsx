@@ -18,7 +18,7 @@ const BoardPage = () => {
   const [students, setStudents] = useState([]);
   const [showFilters, setShowFilters] = useState(false);
 
-  const columns = ['Backlog', 'Análisis', 'Diseño', 'Desarrollo', 'Testing', 'Completado'];
+  const columns = ['Pendiente', 'En Proceso', 'En Revisión', 'Completado'];
 
   useEffect(() => {
     loadActivities();
@@ -58,6 +58,10 @@ const BoardPage = () => {
     e.preventDefault();
     const taskId = e.dataTransfer.getData('taskId');
     if (!taskId) return;
+    if (column === 'Completado' && user?.rol?.nombre !== 'Docente' && user?.rol?.nombre !== 'Administrador') {
+      showError('Solo un Docente puede aprobar y mover la actividad a Completado tras revisarla.');
+      return;
+    }
 
     try {
       setActivities(prev =>

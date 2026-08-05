@@ -22,6 +22,14 @@ Asignacion.init(
       type: DataTypes.DATE,
       allowNull: false,
       defaultValue: DataTypes.NOW
+    },
+    calificacion: {
+      type: DataTypes.FLOAT,
+      allowNull: true
+    },
+    retroalimentacion: {
+      type: DataTypes.TEXT,
+      allowNull: true
     }
   },
   {
