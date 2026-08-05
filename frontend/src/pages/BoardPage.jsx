@@ -87,6 +87,7 @@ const BoardPage = () => {
       setIsModalOpen(false);
     } catch (error) {
       console.error('Error creating activity:', error);
+      showError(error.response?.data?.message || 'Error al crear la actividad. Verifica los datos.');
     }
   };
 

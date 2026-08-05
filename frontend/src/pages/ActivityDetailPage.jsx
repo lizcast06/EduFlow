@@ -231,9 +231,11 @@ const ActivityDetailPage = () => {
                       onChange={handleStatusChange}
                       className="text-xs font-bold tracking-wider uppercase bg-indigo-50 text-indigo-600 px-3 py-1 rounded-lg border border-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow cursor-pointer appearance-none"
                     >
-                      <option value="Pendiente">Pendiente</option>
-                      <option value="En Proceso">En Proceso</option>
-                      <option value="En Revisión">En Revisión</option>
+                      <option value="Backlog">Backlog</option>
+                      <option value="Análisis">Análisis</option>
+                      <option value="Diseño">Diseño</option>
+                      <option value="Desarrollo">Desarrollo</option>
+                      <option value="Testing">Testing</option>
                       {canEdit && <option value="Completado">Completado</option>}
                     </select>
                   ) : (

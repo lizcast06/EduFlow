@@ -35,7 +35,7 @@ const MainLayout = ({ children }) => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col md:flex-row text-gray-800 font-sans">
+    <div className="min-h-screen bg-gray-50 flex flex-col md:flex-row text-gray-800 font-sans overflow-x-hidden w-full relative">
       
       {/* Mobile Top Navbar */}
       <header className="md:hidden bg-indigo-950 border-b border-indigo-900 px-4 py-3 flex items-center justify-between shadow-sm z-30 text-white">
